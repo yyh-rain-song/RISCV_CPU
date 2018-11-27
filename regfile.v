@@ -9,9 +9,9 @@ module regfile(
     input wire['RegAddrBus] raddr1,
     output reg['RegBus]     rdata1,
 
-    input wire              re1,
-    input wire['RegAddrBus] raddr1,
-    output reg['RegBus]     rdata1,
+    input wire              re2,
+    input wire['RegAddrBus] raddr2,
+    output reg['RegBus]     rdata2,
 )
 
 reg['RegBus] regs[0:RegNum-1];
