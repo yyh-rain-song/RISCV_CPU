@@ -1,22 +1,22 @@
-
+`include "define.v"
 module mem(
     input wire rst,
-    input wire['RegAddrBus] wd_i,
+    input wire[`RegAddrBus] wd_i,
     input wire wreg_i,
-    input wire['RegBus] wdata_i,
+    input wire[`RegBus] wdata_i,
 
-    output reg['RegAddrBus] wd_o,
+    output reg[`RegAddrBus] wd_o,
     output reg wreg_o,
-    output reg['RegBus] wdata_o
+    output reg[`RegBus] wdata_o
 );
 
 always @ (*)
 begin
-    if(rst == 'RstEnable)
+    if(rst == `RstEnable)
     begin
-        wd_o <= 'NOPRegAddr;
-        wreg_o <= 'WriteDisable;
-        wdata_o <= 'ZeroWord;
+        wd_o <= `NOPRegAddr;
+        wreg_o <= `WriteDisable;
+        wdata_o <= `ZeroWord;
     end
     else
     begin
