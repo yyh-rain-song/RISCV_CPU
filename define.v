@@ -3,7 +3,7 @@
 ** define
 */
 
-/*全局宏定�?*/
+/*global define*/
 `ifdef      DEFINE_HEAD
 //do nothing
 `else
@@ -16,8 +16,8 @@
 `define     WriteDisable    1'b0
 `define     ReadEnable      1'b1
 `define     ReadDisable     1'b0
-`define     AluOpBus        7:0 //划定运算子类型分类的宽度
-`define     AluSelBus       2:0//划定运算类型分类的宽�?
+`define     AluOpBus        7:0 //运算子类型
+`define     AluSelBus       2:0//运算类型
 `define     InstInvalid     1'b0
 `define     InstValid       1'b1
 `define     True_v          1'b1
@@ -25,14 +25,14 @@
 `define     ChipEnable      1'b1
 `define     ChipDisable     1'b0
 
-/*与指令相关的宏定�?*/
-`define     EXE_ORI         6'b001101
-`define     EXE_NOP         6'B000000
+/*defines about instruction*/
+`define     EXE_ORI         10'b0010011110
+`define     EXE_NOP         10'b0000000000
 
-`define     EXE_OR_OP       8'b00100101
+`define     EXE_OR_OP       8'b00100101//or operand运算子类型
 `define     EXE_NOP_OP      8'b00000000
 
-`define     EXE_RES_LOGIC   3'b001
+`define     EXE_RES_LOGIC   3'b001//logic 运算类型
 `define     EXE_RES_NOP     3'b000
 
 /*与指令存储器ROM有关的宏定义*/
@@ -48,7 +48,7 @@
 `define     DoubleRegWidth  64
 `define     DoubleRegBus    63:0
 `define     RegNum          32
-`define     RegNumLog2      5//register 索引的宽�? 2^5=32
+`define     RegNumLog2      5
 `define     NOPRegAddr      5'b00000
 
 `endif

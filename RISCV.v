@@ -10,7 +10,7 @@ module RISCV(
     input wire clk,
     input wire rst,
     input wire[`RegBus] rom_data_i,//从rom中取出的数据
-    output wire[`RegBus] rom_addr_o,//读rom的地�??
+    output wire[`RegBus] rom_addr_o,//读rom的地�??
     output wire rom_ce_o//cpu是否可用
 );
 
@@ -55,7 +55,7 @@ wire[`RegBus] reg2_data;
 wire[`RegAddrBus] reg1_addr;
 wire[`RegAddrBus] reg2_addr;
 
-//pc_reg实例�??
+//pc_reg实例�??
 pc_reg pc_reg0(
         .clk(clk),  .rst(rst),  .pc(pc), .ce(rom_ce_o)   
 );
@@ -70,14 +70,22 @@ if_id if_id0(
 
 id id0(
     .rst(rst),  .pc_i(id_pc_i), .inst_i(id_inst_i),
-    //来自regfile的输�??
+    //input from regfile
     .reg1_data_i(reg1_data),  .reg2_data_i(reg2_data),
 
-    //送到regfile的信�??
+    //input from ex
+    .ex_wreg_i(ex_wreg_o),  .ex_wdata_i(ex_wdata_o),
+    .ex_wd_i(ex_wd_o),
+
+    //input from mem
+    .mem_wreg_i(mem_wreg_o),  .mem_wdata_i(mem_wdata_o),
+    .mem_wd_i(mem_wd_o),
+    
+    //output to regfile
     .reg1_read_o(reg1_read),  .reg2_read_o(reg2_read),
     .reg1_addr_o(reg1_addr),  .reg2_addr_o(reg2_addr),
 
-    //送到id_ex的信�??
+    //output to id_ex
     .aluop_o(id_aluop_o),  .alusel_o(id_alusel_o),
     .reg1_o(id_reg1_o),  .reg2_o(id_reg2_o),
     .wd_o(id_wd_o),  .wreg_o(id_wreg_o)

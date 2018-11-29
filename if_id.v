@@ -16,7 +16,7 @@ module if_id(
         end
         else begin
              id_pc <= if_pc;
-             id_inst <= if_inst;
+             id_inst <= {if_inst[7:0],if_inst[15:8],if_inst[23:16],if_inst[31:24]};
              end
     end
 endmodule

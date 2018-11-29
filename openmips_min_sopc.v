@@ -1,6 +1,6 @@
 `include "RISCV.v"
 `include "inst_rom.v"
- 
+
 module openmips_min_sopc(
     input wire clk,
     input wire rst
