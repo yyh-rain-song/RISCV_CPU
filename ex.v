@@ -5,14 +5,15 @@ module ex(
     input wire[`AluSelBus] alusel_i,
     input wire[`RegBus] reg1_i,
     input wire[`RegBus] reg2_i,
-    input wire[`RegAddrBus] wd_i,//要写的寄存器的地�?
-    input wire wreg_i,//是否要写寄存�?
+    input wire[`RegAddrBus] wd_i,//要写的寄存器的地�?
+    input wire wreg_i,//是否要写寄存�?
 
     output reg[`RegAddrBus] wd_o,
     output reg wreg_o,
     output reg[`RegBus] wdata_o
 );
 reg[`RegBus] logicout;
+reg[`RegBus] shiftres;
 
 always @ (*)
 begin
@@ -27,13 +28,49 @@ begin
             begin
                 logicout <= reg1_i|reg2_i;
             end
+            `EXE_AND_OP:
+            begin
+                logicout <= reg1_i&reg2_i;
+            end
+            `EXE_XOR_OP:
+                logicout <= reg1_i^reg2_i;
             default:
             begin
                 logicout <= `ZeroWord;
             end
         endcase
     end
-end
+end//end always
+
+always @ (*)
+begin
+    if(rst == `RstEnable)
+    begin
+        shiftres <= `ZeroWord;
+    end
+    else
+    begin
+        case (aluop_i)
+            `EXE_SFTR_OP:
+            begin
+                shiftres <= reg1_i >> reg2_i[4:0];
+            end
+            `EXE_SFTL_OP:
+            begin
+                shiftres <= reg1_i << reg2_i[4:0];
+            end
+            `EXE_SFTSY_OP:
+            begin
+                shiftres <= ({32{reg1_i[31]}}<<(6'd32-{1'b0,reg2_i[4:0]}))
+                            | reg1_i >> reg2_i[4:0];
+            end
+            default:
+            begin
+                shiftres <= `ZeroWord;
+            end
+        endcase
+    end//end else
+end//end always
 
 always @ (*)
 begin
@@ -43,6 +80,10 @@ begin
         `EXE_RES_LOGIC:
         begin
             wdata_o <= logicout;
+        end
+        `EXE_RES_SHIFT:
+        begin
+            wdata_o <= shiftres;
         end
         default:
         begin

@@ -1,11 +1,12 @@
 `include "define.v"
+
 module id(
     input wire              rst,
     input wire[`InstAddrBus]pc_i,
     input wire[`InstBus]    inst_i,//输入到id阶段的instruction
 
-    input wire[`RegBus]     reg1_data_i,//regfile读端�???1的输出�??
-    input wire[`RegBus]     reg2_data_i,//regfile读端�???2
+    input wire[`RegBus]     reg1_data_i,//regfile读端�???1的输出�??
+    input wire[`RegBus]     reg2_data_i,//regfile读端�???2
     
     //whether the instruction running in ex need write register
     input wire              ex_wreg_i,
@@ -16,23 +17,23 @@ module id(
     input wire[`RegBus]     mem_wdata_i,
     input wire[`RegAddrBus] mem_wd_i,
 
-    output reg              reg1_read_o,//是否�???要读regfile端口1
-    output reg              reg2_read_o,//是否�???要读2
+    output reg              reg1_read_o,//是否�???要读regfile端口1
+    output reg              reg2_read_o,//是否�???要读2
     output reg[`RegAddrBus] reg1_addr_o,//读rs1地址
     output reg[`RegAddrBus] reg2_addr_o,//读rs2地址
 
-    output reg[`AluOpBus]   aluop_o,//运算子类�???
+    output reg[`AluOpBus]   aluop_o,//运算子类�???
     output reg[`AluSelBus]  alusel_o,//运算类型
     output reg[`RegBus]     reg1_o,//源操作数1
     output reg[`RegBus]     reg2_o,//源操作数2
-    output reg[`RegAddrBus] wd_o,//�???要写的寄存器地址
-    output reg              wreg_o//这个指令是否�???要写寄存�???
+    output reg[`RegAddrBus] wd_o,//�???要写的寄存器地址
+    output reg              wreg_o//这个指令是否�???要写寄存�???
 );
 
 wire[9:0] op  = {inst_i[6:0],inst_i[14:12]};//ori的opcode
 wire[4:0] op2 = inst_i[10:6];
 wire[5:0] op3 = inst_i[5:0];
-wire[4:0] op4 = inst_i[20:16];//后面三个似乎ori用不�?
+wire[4:0] op4 = inst_i[20:16];//后面三个似乎ori用不�?
 
 reg[`RegBus] imm;
 
@@ -60,7 +61,17 @@ always @ (*) begin
         reg1_addr_o <= inst_i[19:15];
         reg2_addr_o <= inst_i[24:20];
 
-    case (op)
+    case (op)    
+        `EXE_XORI:
+        begin
+            wreg_o  <= `WriteEnable;
+            aluop_o <= `EXE_XOR_OP;
+            alusel_o <= `EXE_RES_LOGIC;
+            reg1_read_o <= 1'b1;
+            reg2_read_o <= 1'b0;
+            imm     <= {20'h0, inst_i[31:20]};
+            instvalid <= `InstValid;
+        end
         `EXE_ORI:
         begin
             wreg_o  <= `WriteEnable;
@@ -70,6 +81,46 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm     <= {20'h0, inst_i[31:20]};
             instvalid <= `InstValid;
+        end
+        `EXE_ANDI:
+        begin
+            wreg_o  <= `WriteEnable;
+            aluop_o <= `EXE_AND_OP
+            alusel_o <= `EXE_RES_LOGIC;
+            reg1_read_o <= 1'b1;
+            reg2_read_o <= 1'b0;
+            imm     <= {20'h0, inst_i[31:20]};
+            instvalid <= `InstValid;
+        end
+        `EXE_SLLI:
+        begin
+            wreg_o  <= `WriteEnable;
+            aluop_o <= `EXE_SFTL_OP;
+            alusel_o <= `EXE_RES_SHIFT;
+            reg1_read_o <= 1'b1;
+            reg2_read_o <= 1'b0;
+            imm     <= {27'h0, inst_i[24:20]};
+            instvalid <= `InstValid;
+        end
+        `EXE_SRLI:
+        begin
+            wreg_o  <= `WriteEnable;
+            alusel_o <= `EXE_RES_SHIFT;
+            reg1_read_o <= 1'b1;
+            reg2_read_o <= 1'b0;
+            imm     <= {27'h0, inst_i[24:20]};
+            instvalid <= `InstValid;
+            if(inst_i[31:25] == 7'b0000000)
+            begin
+            aluop_o <= `EXE_SFTR_OP;
+            end
+            else if(inst_i[31:25] == 7'b0100000)
+            begin
+            aluop_o <= `EXE_SFTSY_OP;
+            end
+            else begin
+                instvalid = `InstInvalid
+            end
         end
         default:
         begin
@@ -132,7 +183,7 @@ begin
     end
     else 
     begin
-        reg1_o <= `ZeroWord;
+        reg2_o <= `ZeroWord;
     end
 end//end always
 
