@@ -92,6 +92,36 @@ always @ (*) begin
             imm     <= {20'h0, inst_i[31:20]};
             instvalid <= `InstValid;
         end
+        `EXE_XOR:
+        begin
+            wreg_o <= `WriteEnable;
+            aluop_o <= `EXE_XOR_OP;
+            alusel_o <= `EXE_RES_LOGIC;
+            reg1_read_o <= 1'b1;
+            reg2_read_o <= 1'b1;
+            imm <= `ZeroWord;
+            instvalid <= `InstValid;
+        end
+        `EXE_OR:
+        begin
+            wreg_o <= `WriteEnable;
+            aluop_o <= `EXE_OR_OP;
+            alusel_o <= `EXE_RES_LOGIC;
+            reg1_read_o <= 1'b1;
+            reg2_read_o <= 1'b1;
+            imm <= `ZeroWord;
+            instvalid <= `InstValid;
+        end
+        `EXE_AND:
+        begin
+            wreg_o <= `WriteEnable;
+            aluop_o <= `EXE_AND_OP;
+            alusel_o <= `EXE_RES_LOGIC;
+            reg1_read_o <= 1'b1;
+            reg2_read_o <= 1'b1;
+            imm <= `ZeroWord;
+            instvalid <= `InstValid;
+        end
         `EXE_SLLI:
         begin
             wreg_o  <= `WriteEnable;
@@ -109,6 +139,36 @@ always @ (*) begin
             reg1_read_o <= 1'b1;
             reg2_read_o <= 1'b0;
             imm     <= {27'h0, inst_i[24:20]};
+            instvalid <= `InstValid;
+            if(inst_i[31:25] == 7'b0000000)
+            begin
+            aluop_o <= `EXE_SFTR_OP;
+            end
+            else if(inst_i[31:25] == 7'b0100000)
+            begin
+            aluop_o <= `EXE_SFTSY_OP;
+            end
+            else begin
+                instvalid = `InstInvalid
+            end
+        end
+        `EXE_SLL:
+        begin
+            wreg_o  <= `WriteEnable;
+            aluop_o <= `EXE_SFTL_OP;
+            alusel_o <= `EXE_RES_SHIFT;
+            reg1_read_o <= 1'b1;
+            reg2_read_o <= 1'b1;
+            imm     <= `ZeroWord;
+            instvalid <= `InstValid;
+        end
+        `EXE_SRL:
+        begin
+            wreg_o  <= `WriteEnable;
+            alusel_o <= `EXE_RES_SHIFT;
+            reg1_read_o <= 1'b1;
+            reg2_read_o <= 1'b1;
+            imm     <= `ZeroWord;
             instvalid <= `InstValid;
             if(inst_i[31:25] == 7'b0000000)
             begin
