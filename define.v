@@ -37,6 +37,7 @@
 `define     EXE_SRL         10'b0110011101
 `define     EXE_OR          10'b0110011110
 `define     EXE_AND         10'b0110011111
+`define     EXE_LUI         10'b0110111000
 
 `define     EXE_OR_OP       8'b00000001//or operand运算子类型
 `define     EXE_AND_OP      8'b00000010
