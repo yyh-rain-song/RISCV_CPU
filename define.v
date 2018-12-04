@@ -38,6 +38,12 @@
 `define     EXE_OR          10'b0110011110
 `define     EXE_AND         10'b0110011111
 `define     EXE_LUI         10'b0110111000
+`define     EXE_ADDI        10'b0010011000
+`define     EXE_SLTI        10'b0010011010
+`define     EXE_SLTIU       10'b0010011011
+`define     EXE_ADD         10'b0110011000//also EXE_SUB
+`define     EXE_SLT         10'b0110011010
+`define     EXE_SLTU        10'b0110011011
 
 `define     EXE_OR_OP       8'b00000001//or operand运算子类型
 `define     EXE_AND_OP      8'b00000010
@@ -45,10 +51,15 @@
 `define     EXE_SFTR_OP     8'b00000100
 `define     EXE_SFTL_OP     8'b00000101
 `define     EXE_SFTSY_OP    8'b00000110
+`define     EXE_ADD_OP      8'b00000111
+`define     EXE_LES_OP      8'b00001000
+`define     EXE_SUB_OP      8'b00001001
+`define     EXE_LESU_OP     8'b00001010
 `define     EXE_NOP_OP      8'b00000000
 
 `define     EXE_RES_LOGIC   3'b001//logic 运算类型(and andi or ori xor xori) lui解码为ori imm x0
 `define     EXE_RES_SHIFT   3'b010//shift 运算类型(sll slli srl srli sra srai)
+`define     EXE_RES_MATH    3'b011//数学 运算类型(add addi stl stli sltu sltiu)
 `define     EXE_RES_NOP     3'b000
 
 /*与指令存储器ROM有关的宏定义*/

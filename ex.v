@@ -14,6 +14,12 @@ module ex(
 );
 reg[`RegBus] logicout;
 reg[`RegBus] shiftres;
+reg[`RegBus] arithmatic;
+
+
+wire[`RegBus] reg2_i_mux;
+wire reg1_les_reg2;
+wire[`RegBus] result_sum;
 
 always @ (*)
 begin
@@ -72,6 +78,44 @@ begin
     end//end else
 end//end always
 
+assign reg2_i_mux = ((aluop_i == `EXE_SUB_OP) || 
+                     (aluop_i == `EXE_LES_OP))?
+                    (~reg2_i)+1 : reg2_i;
+
+assign result_sum = reg1_i + reg2_i_mux;
+
+assign reg1_les_reg2 = (aluop_i == `EXE_LES_OP)?
+                       ((reg1_i[31] && !reg2_i[31]) ||
+                        (!reg1_i[31] && !reg2_i[31] && result_sum[31]) ||
+                        (reg1_i[31] && reg2_i[31] && result_sum[31]))
+                      :(reg1_i < reg2_i);
+
+always @ (*)
+begin
+    if(rst == `RstEnable)
+    begin
+        arithmatic <= `ZeroWord;
+    end
+    else
+    begin
+        case (aluop_i)
+            `EXE_ADD_OP, `EXE_SUB_OP:
+            begin
+                arithmatic <= result_sum;
+            end
+            `EXE_LES_OP, `EXE_LESU_OP:
+            begin
+                arithmatic <= reg1_les_reg2;
+            end
+        default
+        begin
+            arithmatic <= `ZeroWord;
+        end
+        endcase
+    end
+
+end//end always
+
 always @ (*)
 begin
     wd_o <= wd_i;
@@ -84,6 +128,10 @@ begin
         `EXE_RES_SHIFT:
         begin
             wdata_o <= shiftres;
+        end
+        `EXE_RES_MATH:
+        begin
+            wdata_o <= arithmatic;
         end
         default:
         begin
