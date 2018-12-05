@@ -4,12 +4,13 @@ module if_id(
     input wire                  rst,
     input wire[`InstAddrBus]    if_pc,
     input wire[`InstBus]        if_inst,
+    input wire                  IFID_discard_i,
     output reg[`InstAddrBus]    id_pc,
     output reg[`InstBus]        id_inst
 );
     always @ (posedge clk)
     begin
-        if(rst == `RstEnable)
+        if((rst == `RstEnable) || IFID_discard_i == 1'b1)
         begin
             id_pc <= `ZeroWord;
             id_inst <= `ZeroWord;

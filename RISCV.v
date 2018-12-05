@@ -25,6 +25,15 @@ wire[`RegBus] id_reg2_o;
 wire id_wreg_o;
 wire[`RegAddrBus] id_wd_o;
 
+wire[`InstAddrBus] id_link_pc_o;
+wire[`InstAddrBus] ex_link_pc_i;
+wire[31:0] id_branch_offset_o;
+wire[31:0] ex_branch_offset_i;
+wire ex_pc_branch_o;
+wire ex_IFID_discard_o;
+wire ex_IDEX_discard_o;
+wire ex_branch_addr_o;
+
 wire[`AluOpBus] ex_aluop_i;
 wire[`AluSelBus] ex_alusel_i;
 wire[`RegBus] ex_reg1_i;
@@ -57,15 +66,19 @@ wire[`RegAddrBus] reg2_addr;
 
 //pc_reg实例�??
 pc_reg pc_reg0(
-        .clk(clk),  .rst(rst),  .pc(pc), .ce(rom_ce_o)   
+        .clk(clk),  .rst(rst),  
+        .pc_branch_i(ex_pc_branch_o),
+        .branch_addr_i(ex_branch_addr_o),
+        
+        .pc(pc), .ce(rom_ce_o)   
 );
 
 assign rom_addr_o = pc;
 
 if_id if_id0(
     .clk(clk),  .rst(rst),  .if_pc(pc),
-    .if_inst(rom_data_i),  .id_pc(id_pc_i),
-    .id_inst(id_inst_i)
+    .if_inst(rom_data_i), .IFID_discard_i(ex_IFID_discard_o),
+    .id_pc(id_pc_i), .id_inst(id_inst_i)
 );
 
 id id0(
@@ -89,6 +102,7 @@ id id0(
     .aluop_o(id_aluop_o),  .alusel_o(id_alusel_o),
     .reg1_o(id_reg1_o),  .reg2_o(id_reg2_o),
     .wd_o(id_wd_o),  .wreg_o(id_wreg_o)
+    .link_pc_o(id_link_pc_o), .branch_offset_o(id_branch_offset_o)
 );
 
 regfile regfile1(
@@ -105,10 +119,15 @@ id_ex id_ex0(
     .id_aluop(id_aluop_o),  .id_alusel(id_alusel_o),
     .id_reg1(id_reg1_o),  .id_reg2(id_reg2_o),
     .id_wd(id_wd_o),  .id_wreg(id_wreg_o),
+    .id_link_pc(id_link_pc_o),
+    .id_branch_offset(id_branch_offset_o),
+    .IDEX_discard_i(ex_IDEX_discard_o),
 
     .ex_aluop(ex_aluop_i), .ex_alusel(ex_alusel_i),
     .ex_reg1(ex_reg1_i),  .ex_reg2(ex_reg2_i),
-    .ex_wd(ex_wd_i),  .ex_wreg(ex_wreg_i)
+    .ex_wd(ex_wd_i),  .ex_wreg(ex_wreg_i),
+    .ex_link_pc(ex_link_pc_i),
+    .ex_branch_offset(ex_branch_offset_i)
 );
 
 ex ex0(
@@ -117,9 +136,15 @@ ex ex0(
     .aluop_i(ex_aluop_i), .alusel_i(ex_alusel_i),
     .reg1_i(ex_reg1_i), .reg2_i(ex_reg2_i),
     .wd_i(ex_wd_i), .wreg_i(ex_wreg_i),
+    .link_pc_i(ex_link_pc_i),
+    .branch_offset_i(ex_branch_offset_i),
 
     .wd_o(ex_wd_o),  .wreg_o(ex_wreg_o),
-    .wdata_o(ex_wdata_o)
+    .wdata_o(ex_wdata_o),
+    .pc_branch_o(ex_pc_branch_o),
+    .branch_addr_o(ex_pc_branch_o),
+    .IFID_discard_o(ex_IFID_discard_o),
+    .IDEX_discard_o(ex_IDEX_discard_o)
 );
 
 ex_mem ex_mem0(

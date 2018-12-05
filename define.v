@@ -44,6 +44,14 @@
 `define     EXE_ADD         10'b0110011000//also EXE_SUB
 `define     EXE_SLT         10'b0110011010
 `define     EXE_SLTU        10'b0110011011
+`define     EXE_JAL         10'b1101111000
+`define     EXE_JALR        10'b1100111000
+`define     EXE_BEQ         10'b1100011000
+`define     EXE_BNE         10'b1100011001
+`define     EXE_BLT         10'b1100011100
+`define     EXE_BGE         10'b1100011101
+`define     EXE_BLTU        10'b1100011110
+`define     EXE_BGEU        10'b1100011111
 
 `define     EXE_OR_OP       8'b00000001//or operand运算子类型
 `define     EXE_AND_OP      8'b00000010
@@ -55,11 +63,22 @@
 `define     EXE_LES_OP      8'b00001000
 `define     EXE_SUB_OP      8'b00001001
 `define     EXE_LESU_OP     8'b00001010
+`define     EXE_JAL_OP      8'b00001011
+`define     EXE_BEQ_OP      8'b00001100
+`define     EXE_BNE_OP      8'b00001101
+`define     EXE_BLT_OP      8'b00001110
+`define     EXE_BGE_OP      8'b00001111
+`define     EXE_BLTU_OP     8'b00010000
+`define     EXE_BGEU_OP     8'b00010001
+`define     EXE_JALR_OP     8'b00010010
 `define     EXE_NOP_OP      8'b00000000
+
+   
 
 `define     EXE_RES_LOGIC   3'b001//logic 运算类型(and andi or ori xor xori) lui解码为ori imm x0
 `define     EXE_RES_SHIFT   3'b010//shift 运算类型(sll slli srl srli sra srai)
 `define     EXE_RES_MATH    3'b011//数学 运算类型(add addi stl stli sltu sltiu)
+`define     EXE_RES_JUMP    3'b100//jump and branch 运算类型(jal jalr beq bne blt bge bltu bgeu)
 `define     EXE_RES_NOP     3'b000
 
 /*与指令存储器ROM有关的宏定义*/
