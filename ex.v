@@ -5,8 +5,8 @@ module ex(
     input wire[`AluSelBus] alusel_i,
     input wire[`RegBus] reg1_i,
     input wire[`RegBus] reg2_i,
-    input wire[`RegAddrBus] wd_i,//要写的寄存器的地�????
-    input wire wreg_i,//是否要写寄存�????
+    input wire[`RegAddrBus] wd_i,//要写的寄存器的地�?????
+    input wire wreg_i,//是否要写寄存�?????
     input wire[`InstAddrBus] link_pc_i,
     input wire[31:0] branch_offset_i,
 
@@ -16,7 +16,7 @@ module ex(
     output reg pc_branch_o,
     output reg[`InstAddrBus] branch_addr_o,
     output reg IFID_discard_o,
-    output reg IDEX_discard_o,
+    output reg IDEX_discard_o
 );
 reg[`RegBus] logicout;
 reg[`RegBus] shiftres;
@@ -155,7 +155,7 @@ begin
             pc_branch_o <= 1'b1;
             IFID_discard_o <= 1'b1;
             IDEX_discard_o <= 1'b1;
-            branch_addr_o <= (reg1_i + reg2_i)&{{31{1}},0};
+            branch_addr_o <= (reg1_i + reg2_i)&(-2);
         end
         `EXE_BEQ_OP:
         begin
@@ -225,12 +225,20 @@ begin
         end
         default:
         begin
+            pc_branch_o <= 1'b0;
+            IFID_discard_o <= 1'b0;
+            IDEX_discard_o <= 1'b0;
             link_addr <= `ZeroWord;
+            branch_addr_o <= `ZeroWord;
         end
         endcase
     end
     else begin
+        pc_branch_o <= 1'b0;
+        IFID_discard_o <= 1'b0;
+        IDEX_discard_o <= 1'b0;
         link_addr <= `ZeroWord;
+        branch_addr_o <= `ZeroWord;
     end
 end//end always
 
