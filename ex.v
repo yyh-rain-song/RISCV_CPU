@@ -5,18 +5,18 @@ module ex(
     input wire[`AluSelBus] alusel_i,
     input wire[`RegBus] reg1_i,
     input wire[`RegBus] reg2_i,
-    input wire[`RegAddrBus] wd_i,//要写的寄存器的地�?
-    input wire wreg_i,//是否要写寄存�?
+    input wire[`RegAddrBus] wd_i,//要写的寄存器的地�????
+    input wire wreg_i,//是否要写寄存�????
     input wire[`InstAddrBus] link_pc_i,
     input wire[31:0] branch_offset_i,
 
     output reg[`RegAddrBus] wd_o,
     output reg wreg_o,
-    output reg[`RegBus] wdata_o
+    output reg[`RegBus] wdata_o,
     output reg pc_branch_o,
-    output reg[`InstAddrBus] branch_addr_o;
+    output reg[`InstAddrBus] branch_addr_o,
     output reg IFID_discard_o,
-    output reg IDEX_discard_o
+    output reg IDEX_discard_o,
 );
 reg[`RegBus] logicout;
 reg[`RegBus] shiftres;
@@ -147,7 +147,7 @@ begin
             pc_branch_o <= 1'b1;
             IFID_discard_o <= 1'b1;
             IDEX_discard_o <= 1'b1;
-            branch_addr_o <= link_pc_i - 4 + reg1_i;
+            branch_addr_o <= (link_pc_i - 4) + (reg1_i<<1);
         end
         `EXE_JALR_OP:
         begin
@@ -155,7 +155,7 @@ begin
             pc_branch_o <= 1'b1;
             IFID_discard_o <= 1'b1;
             IDEX_discard_o <= 1'b1;
-            branch_addr_o <= (reg1_i + reg2_i) & {31{1},0};
+            branch_addr_o <= (reg1_i + reg2_i)&{{31{1}},0};
         end
         `EXE_BEQ_OP:
         begin
@@ -242,14 +242,26 @@ begin
         `EXE_RES_LOGIC:
         begin
             wdata_o <= logicout;
+            pc_branch_o <= 1'b0;
+            branch_addr_o <= `ZeroWord;
+            IFID_discard_o <= 1'b0;
+            IDEX_discard_o <= 1'b0;
         end
         `EXE_RES_SHIFT:
         begin
             wdata_o <= shiftres;
+            pc_branch_o <= 1'b0;
+            branch_addr_o <= `ZeroWord;
+            IFID_discard_o <= 1'b0;
+            IDEX_discard_o <= 1'b0;
         end
         `EXE_RES_MATH:
         begin
             wdata_o <= arithmatic;
+            pc_branch_o <= 1'b0;
+            branch_addr_o <= `ZeroWord;
+            IFID_discard_o <= 1'b0;
+            IDEX_discard_o <= 1'b0;
         end
         `EXE_RES_JUMP:
         begin

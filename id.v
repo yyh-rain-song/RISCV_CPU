@@ -5,8 +5,8 @@ module id(
     input wire[`InstAddrBus]pc_i,
     input wire[`InstBus]    inst_i,//输入到id阶段的instruction
 
-    input wire[`RegBus]     reg1_data_i,//regfile读端�??????1的输出�??
-    input wire[`RegBus]     reg2_data_i,//regfile读端�??????2
+    input wire[`RegBus]     reg1_data_i,//regfile读端�????????1的输出�??
+    input wire[`RegBus]     reg2_data_i,//regfile读端�????????2
     
     //whether the instruction running in ex need write register
     input wire              ex_wreg_i,
@@ -17,26 +17,26 @@ module id(
     input wire[`RegBus]     mem_wdata_i,
     input wire[`RegAddrBus] mem_wd_i,
 
-    output reg              reg1_read_o,//是否�??????要读regfile端口1
-    output reg              reg2_read_o,//是否�??????要读2
+    output reg              reg1_read_o,//是否�????????要读regfile端口1
+    output reg              reg2_read_o,//是否�????????要读2
     output reg[`RegAddrBus] reg1_addr_o,//读rs1地址
     output reg[`RegAddrBus] reg2_addr_o,//读rs2地址
 
-    output reg[`AluOpBus]   aluop_o,//运算子类�??????
+    output reg[`AluOpBus]   aluop_o,//运算子类�????????
     output reg[`AluSelBus]  alusel_o,//运算类型
     output reg[`RegBus]     reg1_o,//源操作数1
     output reg[`RegBus]     reg2_o,//源操作数2
-    output reg[`RegAddrBus] wd_o,//�??????要写的寄存器地址
-    output reg              wreg_o//这个指令是否�??????要写寄存�??????
+    output reg[`RegAddrBus] wd_o,//�????????要写的寄存器地址
+    output reg              wreg_o,//这个指令是否�????????要写寄存�????????
 
-    output reg[`InstAddrBus]link_pc_o;
-    output reg[31:0]        branch_offset_o;
+    output reg[`InstAddrBus]link_pc_o,
+    output reg[31:0]        branch_offset_o
 );
 
 wire[9:0] op  = {inst_i[6:0],inst_i[14:12]};//ori的opcode
 wire[4:0] op2 = inst_i[10:6];
 wire[5:0] op3 = inst_i[5:0];
-wire[4:0] op4 = inst_i[20:16];//后面三个似乎ori用不�????
+wire[4:0] op4 = inst_i[20:16];//后面三个似乎ori用不�??????
 
 reg[`RegBus] imm;
 
@@ -48,12 +48,14 @@ always @ (*) begin
     begin 
         reg1_read_o <= 1'b0;
         reg2_read_o <= 1'b0;
+        reg1_addr_o <= `NOPRegAddr;
+        reg2_addr_o <= `NOPRegAddr;
         wreg_o <= 1'b0;
-        reg1_o <= `ZeroWord;
-        reg2_o <= `ZeroWord;
+        wd_o <= `NOPRegAddr;
         aluop_o <= `EXE_NOP_OP;
         alusel_o <= `EXE_RES_NOP;
         link_pc_o <= `ZeroWord;
+        branch_offset_o <= `ZeroWord;
     end
     else if({op[9:3],3'h000} == `EXE_LUI)
     begin
@@ -66,6 +68,7 @@ always @ (*) begin
         imm <= {inst_i[31:12],12'h0};
         instvalid <= `InstValid;
         reg1_addr_o <= `NOPRegAddr;
+        branch_offset_o <= `ZeroWord;
     end
     else if({op[9:3],3'h000} == `EXE_JAL)
     begin
@@ -75,9 +78,10 @@ always @ (*) begin
         reg2_read_o <= 1'b0;
         aluop_o <= `EXE_JAL_OP;
         alusel_o <= `EXE_RES_JUMP;
-        imm <= {{10{inst_i[31]}},inst_i[31:12]};
+        imm <= {{10{inst_i[31]}},inst_i[31],inst_i[19:12],inst_i[20],inst_i[30:21]};
         instvalid <= `InstValid;
         link_pc_o <= pc_i + 4;
+        branch_offset_o <= `ZeroWord;
     end
     else
     begin     
@@ -95,6 +99,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm     <= {20'h0, inst_i[31:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_ORI:
         begin
@@ -105,6 +111,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm     <= {20'h0, inst_i[31:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_ANDI:
         begin
@@ -115,6 +123,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm     <= {20'h0, inst_i[31:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_XOR:
         begin
@@ -125,6 +135,8 @@ always @ (*) begin
             reg2_read_o <= 1'b1;
             imm <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_OR:
         begin
@@ -135,6 +147,8 @@ always @ (*) begin
             reg2_read_o <= 1'b1;
             imm <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_AND:
         begin
@@ -145,6 +159,8 @@ always @ (*) begin
             reg2_read_o <= 1'b1;
             imm <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_SLLI:
         begin
@@ -161,6 +177,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm     <= {27'h0, inst_i[24:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
             end
         end
         `EXE_SRLI:
@@ -171,6 +189,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm     <= {27'h0, inst_i[24:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
             if(inst_i[31:25] == 7'b0000000)
             begin
             aluop_o <= `EXE_SFTR_OP;
@@ -192,6 +212,8 @@ always @ (*) begin
             reg2_read_o <= 1'b1;
             imm     <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_SRL:
         begin
@@ -201,6 +223,8 @@ always @ (*) begin
             reg2_read_o <= 1'b1;
             imm     <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
             if(inst_i[31:25] == 7'b0000000)
             begin
             aluop_o <= `EXE_SFTR_OP;
@@ -222,6 +246,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm <= {{12{inst_i[31]}},inst_i[31:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_SLTI:
         begin
@@ -232,6 +258,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm <= {{12{inst_i[31]}},inst_i[31:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_SLTIU:
         begin
@@ -242,6 +270,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm <= {{12{inst_i[31]}},inst_i[31:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_ADD:
         begin
@@ -251,6 +281,8 @@ always @ (*) begin
             reg2_read_o <= 1'b1;
             imm <= {{12{inst_i[31]}},inst_i[31:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
             if(inst_i[31:25]==7'b0000000)
             begin
                 aluop_o <= `EXE_ADD_OP;
@@ -273,6 +305,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm <= {{12{inst_i[31]}},inst_i[31:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_SLTU:
         begin
@@ -283,6 +317,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm <= {{12{0}},inst_i[31:20]};
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_JALR:
         begin
@@ -294,6 +330,7 @@ always @ (*) begin
             imm <= {{20{inst_i[31]}},inst_i[31:20]};
             instvalid <= `InstValid;
             link_pc_o <= pc_i + 4;
+            branch_offset_o <= `ZeroWord;
         end
         `EXE_BEQ:
         begin
@@ -306,6 +343,7 @@ always @ (*) begin
             inst_i[31],inst_i[7],inst_i[30:25],inst_i[11:8]};
             imm <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
         end
         `EXE_BNE:
         begin
@@ -318,6 +356,7 @@ always @ (*) begin
             inst_i[31],inst_i[7],inst_i[30:25],inst_i[11:8]};
             imm <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
         end
         `EXE_BLT:
         begin
@@ -330,6 +369,7 @@ always @ (*) begin
             inst_i[31],inst_i[7],inst_i[30:25],inst_i[11:8]};
             imm <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
         end
         `EXE_BGE:
         begin
@@ -342,6 +382,7 @@ always @ (*) begin
             inst_i[31],inst_i[7],inst_i[30:25],inst_i[11:8]};
             imm <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
         end
         `EXE_BLTU:
         begin
@@ -354,6 +395,7 @@ always @ (*) begin
             inst_i[31],inst_i[7],inst_i[30:25],inst_i[11:8]};
             imm <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
         end
         `EXE_BGEU:
         begin
@@ -366,6 +408,7 @@ always @ (*) begin
             inst_i[31],inst_i[7],inst_i[30:25],inst_i[11:8]};
             imm <= `ZeroWord;
             instvalid <= `InstValid;
+            link_pc_o <= `ZeroWord;
         end
         default:
         begin
@@ -376,6 +419,8 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             imm         <= `ZeroWord;
             instvalid   <= `InstInvalid;
+            link_pc_o <= `ZeroWord;
+            branch_offset_o <= `ZeroWord;
         end
     endcase//end case op
     end//end else

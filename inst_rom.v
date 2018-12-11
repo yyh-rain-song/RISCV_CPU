@@ -6,9 +6,9 @@ module inst_rom(
 );
 
     reg[`InstBus] inst_mem[0:`InstMemNum-1];
-    initial $readmemh ("D:/RISCV/compile/test4.data", inst_mem);
+    initial $readmemh ("D:/RISCV/compile/test6.data", inst_mem);
     always @ (*) begin
-        if(ce == `ChipDisable)
+       if(ce == `ChipDisable)
         begin
             inst <= `ZeroWord;
         end

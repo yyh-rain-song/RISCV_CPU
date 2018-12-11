@@ -10,7 +10,7 @@ module RISCV(
     input wire clk,
     input wire rst,
     input wire[`RegBus] rom_data_i,//从rom中取出的数据
-    output wire[`RegBus] rom_addr_o,//读rom的地�??
+    output wire[`RegBus] rom_addr_o,//读rom的地�????
     output wire rom_ce_o//cpu是否可用
 );
 
@@ -32,7 +32,7 @@ wire[31:0] ex_branch_offset_i;
 wire ex_pc_branch_o;
 wire ex_IFID_discard_o;
 wire ex_IDEX_discard_o;
-wire ex_branch_addr_o;
+wire[`InstAddrBus] ex_branch_addr_o;
 
 wire[`AluOpBus] ex_aluop_i;
 wire[`AluSelBus] ex_alusel_i;
@@ -64,7 +64,7 @@ wire[`RegBus] reg2_data;
 wire[`RegAddrBus] reg1_addr;
 wire[`RegAddrBus] reg2_addr;
 
-//pc_reg实例�??
+//pc_reg实例�????
 pc_reg pc_reg0(
         .clk(clk),  .rst(rst),  
         .pc_branch_i(ex_pc_branch_o),
@@ -101,7 +101,7 @@ id id0(
     //output to id_ex
     .aluop_o(id_aluop_o),  .alusel_o(id_alusel_o),
     .reg1_o(id_reg1_o),  .reg2_o(id_reg2_o),
-    .wd_o(id_wd_o),  .wreg_o(id_wreg_o)
+    .wd_o(id_wd_o),  .wreg_o(id_wreg_o),
     .link_pc_o(id_link_pc_o), .branch_offset_o(id_branch_offset_o)
 );
 
@@ -142,10 +142,10 @@ ex ex0(
     .wd_o(ex_wd_o),  .wreg_o(ex_wreg_o),
     .wdata_o(ex_wdata_o),
     .pc_branch_o(ex_pc_branch_o),
-    .branch_addr_o(ex_pc_branch_o),
+    .branch_addr_o(ex_branch_addr_o),
     .IFID_discard_o(ex_IFID_discard_o),
     .IDEX_discard_o(ex_IDEX_discard_o)
-);
+    );
 
 ex_mem ex_mem0(
     .clk(clk),  .rst(rst),

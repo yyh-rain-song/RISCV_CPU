@@ -12,15 +12,18 @@ module id_ex(
     input wire[`InstAddrBus] id_link_pc,
     input wire[31:0] id_branch_offset,
     input wire IDEX_discard_i,
+    input wire prev_discard,
 
     output reg[`AluOpBus] ex_aluop,
     output reg[`AluSelBus] ex_alusel,
     output reg[`RegBus] ex_reg1,
     output reg[`RegBus] ex_reg2,
     output reg[`RegAddrBus] ex_wd,
-    output reg ex_wreg
-    output reg[`InstAddrBus] ex_link_pc;
-    output reg[31:0] ex_branch_offset;
+    output reg ex_wreg,
+    output reg[`InstAddrBus] ex_link_pc,
+    output reg[31:0] ex_branch_offset,
+    
+    output reg discarded
 );
 
 always @ (posedge clk)
