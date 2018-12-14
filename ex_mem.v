@@ -6,6 +6,7 @@ module ex_mem(
     input wire[`RegAddrBus] ex_wd,
     input wire ex_wreg,
     input wire[`RegBus] ex_wdata,
+    input wire[1:0] halt_type,
 
     output reg[`RegAddrBus] mem_wd,
     output reg  mem_wreg,
@@ -20,7 +21,7 @@ begin
         mem_wreg <= `WriteDisable;
         mem_wdata <= `ZeroWord;
     end
-    else
+    else if(halt_type == 2'b00 || halt_type == 2'b01)
     begin
         mem_wd <= ex_wd;
         mem_wreg <= ex_wreg;

@@ -10,11 +10,19 @@ module RISCV(
     input wire clk,
     input wire rst,
     input wire[`RegBus] rom_data_i,//从rom中取出的数据
-    output wire[`RegBus] rom_addr_o,//读rom的地�????
+    output wire[`RegBus] rom_addr_o,//读rom的地�?????
     output wire rom_ce_o//cpu是否可用
 );
 
 wire[`InstAddrBus] pc;
+wire[`InstBus] if_inst_o;
+wire[`InstAddrBus] if_pc_o;
+
+wire if_halt_req;
+wire mem_halt_req;
+
+wire[1:0] halt_ctrl_o;
+
 wire[`InstAddrBus] id_pc_i;
 wire[`InstBus] id_inst_i;
 
@@ -64,7 +72,7 @@ wire[`RegBus] reg2_data;
 wire[`RegAddrBus] reg1_addr;
 wire[`RegAddrBus] reg2_addr;
 
-//pc_reg实例�????
+//pc_reg实例�?????
 pc_reg pc_reg0(
         .clk(clk),  .rst(rst),  
         .pc_branch_i(ex_pc_branch_o),
@@ -75,9 +83,27 @@ pc_reg pc_reg0(
 
 assign rom_addr_o = pc;
 
+ctrl ctrl0(
+    .rst(rst),  .if_rq(if_halt_req),
+    .mem_rq(mem_halt_req), 
+
+    .halt_type(halt_ctrl_o)
+);
+
+IF IF0(
+    .rst(rst),  .pc(pc),
+
+    .inst_i(rom_data_i),
+
+    .inst_o(if_inst_o), .pc_o(if_pc_o),
+    .halt_req(if_halt_req)
+);
+
 if_id if_id0(
     .clk(clk),  .rst(rst),  .if_pc(pc),
-    .if_inst(rom_data_i), .IFID_discard_i(ex_IFID_discard_o),
+    .if_inst(if_inst_o), .IFID_discard_i(ex_IFID_discard_o),
+    .halt_type(halt_ctrl_o),
+
     .id_pc(id_pc_i), .id_inst(id_inst_i)
 );
 
@@ -122,6 +148,7 @@ id_ex id_ex0(
     .id_link_pc(id_link_pc_o),
     .id_branch_offset(id_branch_offset_o),
     .IDEX_discard_i(ex_IDEX_discard_o),
+    .halt_type(halt_ctrl_o),
 
     .ex_aluop(ex_aluop_i), .ex_alusel(ex_alusel_i),
     .ex_reg1(ex_reg1_i),  .ex_reg2(ex_reg2_i),
@@ -151,6 +178,7 @@ ex_mem ex_mem0(
     .clk(clk),  .rst(rst),
     .ex_wd(ex_wd_o),  .ex_wreg(ex_wreg_o),
     .ex_wdata(ex_wdata_o),
+    .halt_type(halt_ctrl_o),
 
     .mem_wd(mem_wd_i),  .mem_wreg(mem_wreg_i),
     .mem_wdata(mem_wdata_i)
@@ -171,6 +199,7 @@ mem_wb mem_wb0(
 
     .mem_wd(mem_wd_o),  .mem_wreg(mem_wreg_o),
     .mem_wdata(mem_wdata_o),
+    .halt_type(halt_ctrl_o),
 
     .wb_wd(wb_wd_i),  .wb_wreg(wb_wreg_i),
     .wb_wdata(wb_wdata_i)

@@ -12,7 +12,7 @@ module id_ex(
     input wire[`InstAddrBus] id_link_pc,
     input wire[31:0] id_branch_offset,
     input wire IDEX_discard_i,
-    input wire prev_discard,
+    input wire[1:0] halt_type,
 
     output reg[`AluOpBus] ex_aluop,
     output reg[`AluSelBus] ex_alusel,
@@ -39,8 +39,7 @@ begin
         ex_link_pc <= `ZeroWord;
         ex_branch_offset <= `ZeroWord;
     end
-    else
-    begin
+    else if(halt_type == 2'b00 || halt_type == 2'b01) begin
         ex_aluop <= id_aluop;
         ex_alusel <= id_alusel;
         ex_reg1 <= id_reg1;

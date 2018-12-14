@@ -6,6 +6,7 @@ module mem_wb(
     input wire[`RegAddrBus] mem_wd,
     input wire mem_wreg,
     input wire[`RegBus] mem_wdata,
+    input wire[1:0] halt_type,
 
     output reg[`RegAddrBus] wb_wd,
     output reg wb_wreg,
@@ -20,7 +21,7 @@ begin
         wb_wreg <= `WriteDisable;
         wb_wdata <= `ZeroWord;
     end
-    else
+    else if(halt_type != 2'b11)
     begin
          wb_wd <= mem_wd;
          wb_wreg <= mem_wreg;
