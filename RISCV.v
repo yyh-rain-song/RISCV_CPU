@@ -9,12 +9,15 @@
 module RISCV(
     input wire clk,
     input wire rst,
-    input wire[`RegBus] rom_data_i,//从rom中取出的数据
-    output wire[`RegBus] rom_addr_o,//读rom的地�?????
-    output wire rom_ce_o//cpu是否可用
+    input wire[7:0] rom_data_i,//从rom中取出的数据
+    input wire[1:0] halt_req_i,
+    output wire[16:0] rom_addr_o,//读rom的地�???????
+    output wire rom_ce_o,//cpu是否可用
+    output wire mem_wr
 );
 
 wire[`InstAddrBus] pc;
+wire[`InstBus] if_inst_i;
 wire[`InstBus] if_inst_o;
 wire[`InstAddrBus] if_pc_o;
 
@@ -23,6 +26,7 @@ wire mem_halt_req;
 
 wire[1:0] halt_ctrl_o;
 
+wire inst_enable;
 wire[`InstAddrBus] id_pc_i;
 wire[`InstBus] id_inst_i;
 
@@ -72,28 +76,36 @@ wire[`RegBus] reg2_data;
 wire[`RegAddrBus] reg1_addr;
 wire[`RegAddrBus] reg2_addr;
 
-//pc_reg实例�?????
+//pc_reg实例�???????
 pc_reg pc_reg0(
         .clk(clk),  .rst(rst),  
         .pc_branch_i(ex_pc_branch_o),
         .branch_addr_i(ex_branch_addr_o),
+        .halt_type(halt_ctrl_o),
         
         .pc(pc), .ce(rom_ce_o)   
 );
 
-assign rom_addr_o = pc;
+mem_buffer mem_buffer0(
+    .clk(clk),  .rst(rst),
+    .pc_addr_i(pc), .read_data(rom_data_i),
+
+    .inst_o(if_inst_i), .inst_enable(inst_enable),
+    .read_addr(rom_addr_o), .mem_wr(mem_wr)
+);
 
 ctrl ctrl0(
     .rst(rst),  .if_rq(if_halt_req),
     .mem_rq(mem_halt_req), 
+    .out_rq(halt_req_i),
 
     .halt_type(halt_ctrl_o)
 );
 
 IF IF0(
     .rst(rst),  .pc(pc),
-
-    .inst_i(rom_data_i),
+    .inst_enable_i(inst_enable),
+    .inst_i(if_inst_i),
 
     .inst_o(if_inst_o), .pc_o(if_pc_o),
     .halt_req(if_halt_req)

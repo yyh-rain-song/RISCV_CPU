@@ -5,6 +5,8 @@ module pc_reg(
     input wire                  rst,
     input wire                  pc_branch_i,
     input wire[`InstAddrBus]    branch_addr_i,
+    input wire[1:0]             halt_type,
+    
     output reg[`InstAddrBus]    pc,
     output reg                  ce
 );
@@ -25,12 +27,15 @@ module pc_reg(
             begin
             pc <= `ZeroWord;
             end
-        else if(pc_branch_i == 1'b1)
+        else if (halt_type == 2'b00)
         begin
-            pc <= branch_addr_i;
+            if(pc_branch_i == 1'b1)
+            begin
+                pc <= branch_addr_i;
+            end
+            else begin
+                pc <= pc + 4'h4;
+            end
         end
-        else begin
-             pc <= pc + 4'h4;
-             end
     end
 endmodule

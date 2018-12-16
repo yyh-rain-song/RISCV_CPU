@@ -16,7 +16,7 @@
 `define     WriteDisable    1'b0
 `define     ReadEnable      1'b1
 `define     ReadDisable     1'b0
-`define     AluOpBus        7:0 //运算子类型
+`define     AluOpBus        7:0 //运算子类�?
 `define     AluSelBus       2:0//运算类型
 `define     InstInvalid     1'b0
 `define     InstValid       1'b1
@@ -53,7 +53,7 @@
 `define     EXE_BLTU        10'b1100011110
 `define     EXE_BGEU        10'b1100011111
 
-`define     EXE_OR_OP       8'b00000001//or operand运算子类型
+`define     EXE_OR_OP       8'b00000001//or operand运算子类�?
 `define     EXE_AND_OP      8'b00000010
 `define     EXE_XOR_OP      8'b00000011
 `define     EXE_SFTR_OP     8'b00000100
@@ -90,6 +90,7 @@
 /*与�?�用寄存器Regfile有关的宏定义*/
 `define     RegAddrBus      4:0
 `define     RegBus          31:0
+`define     ByteBus         7:0
 `define     RegWidth        32
 `define     DoubleRegWidth  64
 `define     DoubleRegBus    63:0

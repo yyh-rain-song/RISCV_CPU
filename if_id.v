@@ -20,7 +20,7 @@ module if_id(
         else if(halt_type == 2'b00)
         begin
             id_pc <= if_pc;
-            id_inst <= {if_inst[7:0],if_inst[15:8],if_inst[23:16],if_inst[31:24]};
+            id_inst <= if_inst;
         end
         else if(halt_type == 2'b01)
         begin
