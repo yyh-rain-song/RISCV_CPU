@@ -17,6 +17,7 @@ module RISCV(
 );
 
 wire[`InstAddrBus] pc;
+wire pc_changed;
 wire[`InstBus] if_inst_i;
 wire[`InstBus] if_inst_o;
 wire[`InstAddrBus] if_pc_o;
@@ -83,12 +84,13 @@ pc_reg pc_reg0(
         .branch_addr_i(ex_branch_addr_o),
         .halt_type(halt_ctrl_o),
         
-        .pc(pc), .ce(rom_ce_o)   
+        .pc(pc), .ce(rom_ce_o), .pc_changed(pc_changed)   
 );
 
 mem_buffer mem_buffer0(
     .clk(clk),  .rst(rst),
     .pc_addr_i(pc), .read_data(rom_data_i),
+    .pc_changed(pc_changed),
 
     .inst_o(if_inst_i), .inst_enable(inst_enable),
     .read_addr(rom_addr_o), .mem_wr(mem_wr)

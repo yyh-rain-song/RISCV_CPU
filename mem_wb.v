@@ -27,6 +27,12 @@ begin
          wb_wreg <= mem_wreg;
          wb_wdata <= mem_wdata;
     end
+    else
+    begin
+        wb_wd <= `NOPRegAddr;
+        wb_wreg <= `WriteDisable;
+        wb_wdata <= `ZeroWord;
+    end
 end
 
 endmodule

@@ -4,6 +4,7 @@ module mem_buffer(
     input wire rst,
     input wire[`InstAddrBus] pc_addr_i,
     input wire[`ByteBus] read_data,
+    input wire pc_changed,
 
     output reg[`InstBus] inst_o,
     output reg inst_enable,
@@ -20,7 +21,7 @@ reg[31:0] temp_inst;
         end
         else 
         begin
-            if(cnt == 3'b100)
+            if(cnt == 3'b100 || pc_changed == 1'b1)
             begin
                 cnt = 3'b000;
             end 
