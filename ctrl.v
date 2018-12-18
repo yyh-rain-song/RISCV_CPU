@@ -14,17 +14,17 @@ begin
     begin
         halt_type <= 2'b00;
     end
+    else if(out_rq == 2'b11)
+        begin
+            halt_type <= 2'b11;
+        end
+    else if(mem_rq == 1'b1 || out_rq == 2'b10)
+        begin
+            halt_type <= 2'b10;
+        end
     else if(if_rq == 1'b1 || out_rq == 2'b01)
     begin
         halt_type <= 2'b01;
-    end
-    else if(mem_rq == 1'b1 || out_rq == 2'b10)
-    begin
-        halt_type <= 2'b10;
-    end
-    else if(out_rq == 1'b1 || out_rq == 2'b11)
-    begin
-        halt_type <= 2'b11;
     end
     else if(out_rq == 2'b00)
     begin

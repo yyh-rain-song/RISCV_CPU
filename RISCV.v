@@ -1,17 +1,10 @@
-`include "id.v"
-`include "id_ex.v"
-`include "ex.v"
-`include "ex_mem.v"
-`include "mem.v"
-`include "mem_wb.v"
-`include "pc_reg.v"
-`include "regfile.v"
+`include "define.v"
 module RISCV(
     input wire clk,
     input wire rst,
-    input wire[7:0] rom_data_i,//从rom中取出的数据
+    input wire[`ByteBus] rom_data_i,//从rom中取出的数据
     input wire[1:0] halt_req_i,
-    output wire[16:0] rom_addr_o,//读rom的地�???????
+    output wire[`RamAddrBus] rom_addr_o,//读rom的地�????????
     output wire rom_ce_o,//cpu是否可用
     output wire mem_wr
 );
@@ -40,8 +33,8 @@ wire[`RegAddrBus] id_wd_o;
 
 wire[`InstAddrBus] id_link_pc_o;
 wire[`InstAddrBus] ex_link_pc_i;
-wire[31:0] id_branch_offset_o;
-wire[31:0] ex_branch_offset_i;
+wire[`RegBus] id_branch_offset_o;
+wire[`RegBus] ex_branch_offset_i;
 wire ex_pc_branch_o;
 wire ex_IFID_discard_o;
 wire ex_IDEX_discard_o;
@@ -77,7 +70,7 @@ wire[`RegBus] reg2_data;
 wire[`RegAddrBus] reg1_addr;
 wire[`RegAddrBus] reg2_addr;
 
-//pc_reg实例�???????
+//pc_reg实例�????????
 pc_reg pc_reg0(
         .clk(clk),  .rst(rst),  
         .pc_branch_i(ex_pc_branch_o),
@@ -170,22 +163,39 @@ id_ex id_ex0(
     .ex_link_pc(ex_link_pc_i),
     .ex_branch_offset(ex_branch_offset_i)
 );
+wire[`RamAddrBus] ex_mem_addr_o;
+wire[`RegBus] ex_mem_write_data_o;
+wire[`AluOpBus] ex_aluop_o;
+wire ex_mem_rw_o;
+
+wire[`RamAddrBus] mem_mem_addr_i;
+wire[`RegBus] mem_mem_write_data_i;
+wire[`AluOpBus] mem_aluop_i;
+wire mem_mem_rw_i;
 
 ex ex0(
     .rst(rst),
 
+    //input from last stage
     .aluop_i(ex_aluop_i), .alusel_i(ex_alusel_i),
     .reg1_i(ex_reg1_i), .reg2_i(ex_reg2_i),
     .wd_i(ex_wd_i), .wreg_i(ex_wreg_i),
     .link_pc_i(ex_link_pc_i),
     .branch_offset_i(ex_branch_offset_i),
 
+    //output abour regfile read/write
     .wd_o(ex_wd_o),  .wreg_o(ex_wreg_o),
     .wdata_o(ex_wdata_o),
+
+    //output about branch
     .pc_branch_o(ex_pc_branch_o),
     .branch_addr_o(ex_branch_addr_o),
     .IFID_discard_o(ex_IFID_discard_o),
-    .IDEX_discard_o(ex_IDEX_discard_o)
+    .IDEX_discard_o(ex_IDEX_discard_o),
+
+    //output about memory
+    .mem_addr(ex_mem_addr_o),  .mem_write_data(ex_mem_write_data_o),
+    .aluop_o(ex_aluop_o),    .mem_rw(ex_mem_rw_o)
     );
 
 ex_mem ex_mem0(

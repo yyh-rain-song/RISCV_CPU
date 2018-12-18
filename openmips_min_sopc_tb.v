@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "openmips_min_sopc.v"
+`include "define.v"
 module openmips_min_sopc_tb();
 reg CLOCK_50;
 reg rst;
@@ -18,6 +18,7 @@ end
 
 initial begin
     halt = 2'b00;
+   // #500 halt = 2'b11;
 end
 
 openmips_min_sopc openmips_min_sopc0(

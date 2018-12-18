@@ -21,9 +21,7 @@ module id_ex(
     output reg[`RegAddrBus] ex_wd,
     output reg ex_wreg,
     output reg[`InstAddrBus] ex_link_pc,
-    output reg[31:0] ex_branch_offset,
-    
-    output reg discarded
+    output reg[31:0] ex_branch_offset
 );
 
 always @ (posedge clk)

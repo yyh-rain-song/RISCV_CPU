@@ -16,7 +16,7 @@
 `define     WriteDisable    1'b0
 `define     ReadEnable      1'b1
 `define     ReadDisable     1'b0
-`define     AluOpBus        7:0 //运算子类�?
+`define     AluOpBus        7:0 //运算子类�??
 `define     AluSelBus       2:0//运算类型
 `define     InstInvalid     1'b0
 `define     InstValid       1'b1
@@ -52,8 +52,10 @@
 `define     EXE_BGE         10'b1100011101
 `define     EXE_BLTU        10'b1100011110
 `define     EXE_BGEU        10'b1100011111
+`define     EXE_LW          10'b0000011010
 
-`define     EXE_OR_OP       8'b00000001//or operand运算子类�?
+
+`define     EXE_OR_OP       8'b00000001//or operand运算子类�??
 `define     EXE_AND_OP      8'b00000010
 `define     EXE_XOR_OP      8'b00000011
 `define     EXE_SFTR_OP     8'b00000100
@@ -71,6 +73,7 @@
 `define     EXE_BLTU_OP     8'b00010000
 `define     EXE_BGEU_OP     8'b00010001
 `define     EXE_JALR_OP     8'b00010010
+`define     EXE_LW_OP       8'b00010011
 `define     EXE_NOP_OP      8'b00000000
 
    
@@ -79,11 +82,26 @@
 `define     EXE_RES_SHIFT   3'b010//shift 运算类型(sll slli srl srli sra srai)
 `define     EXE_RES_MATH    3'b011//数学 运算类型(add addi stl stli sltu sltiu)
 `define     EXE_RES_JUMP    3'b100//jump and branch 运算类型(jal jalr beq bne blt bge bltu bgeu)
+`define     EXE_RES_LS      3'b101//load and store
 `define     EXE_RES_NOP     3'b000
 
+/*defines about mem_buffer state*/
+
+`define     Inst_1          4'b0000
+`define     Inst_2          4'b0001
+`define     Inst_3          4'b0010
+`define     Inst_4          4'b0011
+`define     Inst_5          4'b0100
+`define     Mem_1           4'b0101
+`define     Mem_2           4'b0110
+`define     Mem_3           4'b0111
+`define     Mem_4           4'b1000
+`define     Mem_5           4'b1001
+
 /*与指令存储器ROM有关的宏定义*/
-`define     InstAddrBus     31:0
+`define     RamAddrBus      16:0
 `define     InstBus         31:0
+`define     InstAddrBus     31:0
 `define     InstMemNum      131071
 `define     InstMemNumLog2  17
 
@@ -92,8 +110,6 @@
 `define     RegBus          31:0
 `define     ByteBus         7:0
 `define     RegWidth        32
-`define     DoubleRegWidth  64
-`define     DoubleRegBus    63:0
 `define     RegNum          32
 `define     RegNumLog2      5
 `define     NOPRegAddr      5'b00000

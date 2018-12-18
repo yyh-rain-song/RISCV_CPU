@@ -5,8 +5,8 @@ module ex(
     input wire[`AluSelBus] alusel_i,
     input wire[`RegBus] reg1_i,
     input wire[`RegBus] reg2_i,
-    input wire[`RegAddrBus] wd_i,//要写的寄存器的地�?????
-    input wire wreg_i,//是否要写寄存�?????
+    input wire[`RegAddrBus] wd_i,
+    input wire wreg_i,
     input wire[`InstAddrBus] link_pc_i,
     input wire[31:0] branch_offset_i,
 
@@ -16,7 +16,12 @@ module ex(
     output reg pc_branch_o,
     output reg[`InstAddrBus] branch_addr_o,
     output reg IFID_discard_o,
-    output reg IDEX_discard_o
+    output reg IDEX_discard_o,
+    
+    output reg[`RamAddrBus] mem_addr,
+    output reg[`RegBus] mem_write_data,
+    output reg[`AluOpBus] aluop_o,
+    output reg mem_rw
 );
 reg[`RegBus] logicout;
 reg[`RegBus] shiftres;
@@ -244,8 +249,37 @@ end//end always
 
 always @ (*)
 begin
+    if(alusel_i == `EXE_RES_LS)
+    begin
+        case(aluop_i)
+        `EXE_LW_OP:
+        begin
+            mem_addr <= reg1_i + reg2_i;
+            mem_write_data <= `ZeroWord;
+            mem_rw <= 1'b1;
+        end
+        default:
+        begin
+            mem_addr <= 17'b0;
+            mem_write_data <= `ZeroWord;
+            mem_rw <= 1'b0;
+        end
+        endcase
+    end
+    else
+    begin
+        mem_addr <= 17'b0;
+        mem_write_data <= `ZeroWord;
+        mem_rw <= 1'b0;
+    end
+end
+
+
+always @ (*)
+begin
     wd_o <= wd_i;
     wreg_o <= wreg_i;
+    aluop_o = aluop_i;
     case (alusel_i)
         `EXE_RES_LOGIC:
         begin

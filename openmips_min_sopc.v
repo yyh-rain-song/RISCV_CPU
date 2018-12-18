@@ -1,13 +1,11 @@
-`include "RISCV.v"
-`include "inst_rom.v"
-
+`include "define.v"
 module openmips_min_sopc(
     input wire clk,
     input wire rst,
     input wire[1:0] halt_req
 );
     wire[`InstAddrBus] inst_addr;
-    wire[7:0] inst;
+    wire[`ByteBus] inst;
     wire rom_ce;
     wire mem_wr;
 
