@@ -1,2 +1,1 @@
-_start:
-lw		x1, _start		# 
+ori x1, x0, 0x000

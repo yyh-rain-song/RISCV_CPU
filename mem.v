@@ -8,12 +8,14 @@ module mem(
     input wire[`RamAddrBus] ex_mem_addr_i,
     input wire[`RegBus] ex_mem_data_i,
     input wire ex_mem_wr_i,
-    input wire[`ByteBus] ram_data_i,
+
+    input wire[`RegBus] ram_data_i,
     input wire ram_data_enable_i,
 
     output reg[`RegAddrBus] wd_o,
     output reg wreg_o,
     output reg[`RegBus] wdata_o,
+
     output reg[`RamAddrBus] ram_addr_o,
     output reg halt_req,
     output reg mem_read_req

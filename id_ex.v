@@ -47,7 +47,7 @@ begin
         ex_link_pc <= id_link_pc;
         ex_branch_offset <= id_branch_offset;
     end
-    else
+ /*   else
     begin
         ex_aluop <= `EXE_NOP_OP;
         ex_alusel <= `EXE_RES_NOP;
@@ -57,7 +57,7 @@ begin
         ex_wreg <= `WriteDisable;
         ex_link_pc <= `ZeroWord;
         ex_branch_offset <= `ZeroWord;
-    end
+    end*/
 end
 
 endmodule

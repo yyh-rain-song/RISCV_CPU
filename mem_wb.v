@@ -21,7 +21,7 @@ begin
         wb_wreg <= `WriteDisable;
         wb_wdata <= `ZeroWord;
     end
-    else if(halt_type != 2'b11)
+    else if(halt_type == 2'b00 || halt_type == 2'b01 || halt_type == 2'b10)
     begin
          wb_wd <= mem_wd;
          wb_wreg <= mem_wreg;

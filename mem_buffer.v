@@ -37,7 +37,7 @@ reg mem_rd;
             else if(cnt == `Inst_5 && mem_rd == 1'b0)
             begin
                 cnt <= `Inst_1;
-            end
+            end else
             begin
                 cnt <= cnt + 1;
             end
@@ -50,11 +50,11 @@ reg mem_rd;
         begin
             inst_o <= `ZeroWord;
             inst_enable <= 1'b0;
-            read_addr <= 17'b0;
+            read_addr <= `ZeroRamAddr;
             mem_data_o <= `ZeroWord;
             mem_data_enable <= 1'b0;
             mem_wr <= 1'b1;
-            temp_inst <= 32'b0;
+            temp_inst <= `ZeroWord;
             mem_rd <= 1'b0;
             temp_mem_data <= `ZeroWord;
         end else
@@ -73,6 +73,7 @@ reg mem_rd;
                     mem_addr <= mem_read_addr;
                     temp_mem_data <= `ZeroWord;
                 end
+                mem_data_enable <= 1'b0;
             end
             `Inst_2:
             begin
@@ -87,6 +88,7 @@ reg mem_rd;
                     mem_addr <= mem_read_addr;
                     temp_mem_data <= `ZeroWord;
                 end
+                mem_data_enable <= 1'b0;
             end
             `Inst_3:
             begin
@@ -101,6 +103,7 @@ reg mem_rd;
                     mem_addr <= mem_read_addr;
                     temp_mem_data <= `ZeroWord;
                 end
+                mem_data_enable <= 1'b0;
             end
             `Inst_4:
             begin
@@ -115,6 +118,7 @@ reg mem_rd;
                     mem_addr <= mem_read_addr;
                     temp_mem_data <= `ZeroWord;
                 end
+                mem_data_enable <= 1'b0;
             end
             `Inst_5:
             begin
@@ -127,6 +131,7 @@ reg mem_rd;
                     mem_addr <= mem_read_addr;
                     temp_mem_data <= `ZeroWord;
                 end
+                mem_data_enable <= 1'b0;
             end
             `Mem_1:
             begin
@@ -178,7 +183,7 @@ reg mem_rd;
                 inst_enable <= 1'b1;
                 read_addr <= 17'b0;
                 mem_data_o <= `ZeroWord;
-                mem_data_enable <= 1'b1;
+                mem_data_enable <= 1'b0;
                 mem_wr <= 1'b1;
             end   
             endcase 

@@ -22,7 +22,7 @@ module if_id(
             id_pc <= if_pc;
             id_inst <= if_inst;
         end
-        else
+        else if(halt_type == 2'b01)
         begin
             id_pc <= `ZeroWord;
             id_inst <= `ZeroWord;

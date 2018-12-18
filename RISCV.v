@@ -4,7 +4,7 @@ module RISCV(
     input wire rst,
     input wire[`ByteBus] rom_data_i,//从rom中取出的数据
     input wire[1:0] halt_req_i,
-    output wire[`RamAddrBus] rom_addr_o,//读rom的地�????????
+    output wire[`RamAddrBus] rom_addr_o,//读rom的地�??????????
     output wire rom_ce_o,//cpu是否可用
     output wire mem_wr
 );
@@ -51,6 +51,16 @@ wire ex_wreg_o;
 wire[`RegAddrBus] ex_wd_o;
 wire[`RegBus] ex_wdata_o;
 
+wire[`RamAddrBus] ex_mem_addr_o;
+wire[`RegBus] ex_mem_write_data_o;
+wire[`AluOpBus] ex_aluop_o;
+wire ex_mem_rw_o;
+
+wire[`RamAddrBus] mem_mem_addr_i;
+wire[`RegBus] mem_mem_write_data_i;
+wire[`AluOpBus] mem_aluop_i;
+wire mem_mem_rw_i;
+
 wire mem_wreg_i;
 wire[`RegAddrBus] mem_wd_i;
 wire[`RegBus] mem_wdata_i;
@@ -70,7 +80,14 @@ wire[`RegBus] reg2_data;
 wire[`RegAddrBus] reg1_addr;
 wire[`RegAddrBus] reg2_addr;
 
-//pc_reg实例�????????
+wire[`RegBus] ram_data;
+wire ram_data_enable;
+
+wire[`RamAddrBus] mem_ram_addr;
+//wire mem_halt_req; defined
+wire mem_read_req;
+
+//pc_reg实例�??????????
 pc_reg pc_reg0(
         .clk(clk),  .rst(rst),  
         .pc_branch_i(ex_pc_branch_o),
@@ -83,9 +100,13 @@ pc_reg pc_reg0(
 mem_buffer mem_buffer0(
     .clk(clk),  .rst(rst),
     .pc_addr_i(pc), .read_data(rom_data_i),
+    .mem_read_addr(mem_ram_addr),
+    .mem_read_req(mem_read_req),
     .pc_changed(pc_changed),
 
     .inst_o(if_inst_i), .inst_enable(inst_enable),
+    .mem_data_o(ram_data),
+    .mem_data_enable(ram_data_enable),
     .read_addr(rom_addr_o), .mem_wr(mem_wr)
 );
 
@@ -163,15 +184,6 @@ id_ex id_ex0(
     .ex_link_pc(ex_link_pc_i),
     .ex_branch_offset(ex_branch_offset_i)
 );
-wire[`RamAddrBus] ex_mem_addr_o;
-wire[`RegBus] ex_mem_write_data_o;
-wire[`AluOpBus] ex_aluop_o;
-wire ex_mem_rw_o;
-
-wire[`RamAddrBus] mem_mem_addr_i;
-wire[`RegBus] mem_mem_write_data_i;
-wire[`AluOpBus] mem_aluop_i;
-wire mem_mem_rw_i;
 
 ex ex0(
     .rst(rst),
@@ -201,21 +213,34 @@ ex ex0(
 ex_mem ex_mem0(
     .clk(clk),  .rst(rst),
     .ex_wd(ex_wd_o),  .ex_wreg(ex_wreg_o),
-    .ex_wdata(ex_wdata_o),
-    .halt_type(halt_ctrl_o),
+    .ex_wdata(ex_wdata_o),    .halt_type(halt_ctrl_o),
+    .mem_addr_i(ex_mem_addr_o),
+    .mem_write_data_i(ex_mem_write_data_o),
+    .mem_rw_i(ex_mem_rw_o),  .aluop_i(ex_aluop_o),
 
     .mem_wd(mem_wd_i),  .mem_wreg(mem_wreg_i),
-    .mem_wdata(mem_wdata_i)
+    .mem_wdata(mem_wdata_i),
+    .mem_addr_o(mem_mem_addr_i),
+    .mem_write_data_o(mem_mem_write_data_i),
+    .mem_rw_o(mem_mem_rw_i),  .aluop_o(mem_aluop_i)
 );
 
 mem mem0(
     .rst(rst),
 
     .wd_i(mem_wd_i), .wreg_i(mem_wreg_i),
-    .wdata_i(mem_wdata_i),
+    .wdata_i(mem_wdata_i), .aluop_i(mem_aluop_i),
+    .ex_mem_addr_i(mem_mem_addr_i),
+    .ex_mem_data_i(mem_mem_write_data_i),
+    .ex_mem_wr_i(mem_mem_rw_i),
+
+    .ram_data_i(ram_data),  .ram_data_enable_i(ram_data_enable),
 
     .wd_o(mem_wd_o),  .wreg_o(mem_wreg_o),
-    .wdata_o(mem_wdata_o)
+    .wdata_o(mem_wdata_o),
+
+    .ram_addr_o(mem_ram_addr),  .halt_req(mem_halt_req),
+    .mem_read_req(mem_read_req)
 );
 
 mem_wb mem_wb0(

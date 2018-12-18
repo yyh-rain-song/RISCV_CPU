@@ -162,6 +162,14 @@ begin
             IDEX_discard_o <= 1'b1;
             branch_addr_o <= (reg1_i + reg2_i)&(-2);
         end
+        `EXE_AUIPC_OP:
+        begin
+            link_addr <= link_pc_i;
+            pc_branch_o <= 1'b1;
+            IFID_discard_o <= 1'b1;
+            IDEX_discard_o <= 1'b1;
+            branch_addr_o <= (link_pc_i - 4) + reg1_i;
+        end
         `EXE_BEQ_OP:
         begin
             link_addr <= `ZeroWord;
@@ -260,7 +268,7 @@ begin
         end
         default:
         begin
-            mem_addr <= 17'b0;
+            mem_addr <= `ZeroRamAddr;
             mem_write_data <= `ZeroWord;
             mem_rw <= 1'b0;
         end
@@ -268,7 +276,7 @@ begin
     end
     else
     begin
-        mem_addr <= 17'b0;
+        mem_addr <= `ZeroRamAddr;
         mem_write_data <= `ZeroWord;
         mem_rw <= 1'b0;
     end
