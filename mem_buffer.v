@@ -6,7 +6,7 @@ module mem_buffer(
     input wire[`InstAddrBus] pc_addr_i,
     input wire[`ByteBus] read_data,
     input wire[`RamAddrBus] mem_read_addr,
-    input wire mem_read_req,
+    input wire[1:0] mem_read_req,
     input wire pc_changed,
 
     output reg[`InstBus] inst_o,
@@ -37,7 +37,16 @@ reg mem_rd;
             else if(cnt == `Inst_5 && mem_rd == 1'b0)
             begin
                 cnt <= `Inst_1;
-            end else
+            end
+            else if(cnt == `Mem_2 && mem_rd == 1'b0)
+            begin
+                cnt <= `Inst_1;
+            end
+            else if(cnt == `Mem_3 && mem_rd == 1'b0)
+            begin
+                cnt <= `Inst_1;
+            end
+            else
             begin
                 cnt <= cnt + 1;
             end
@@ -67,7 +76,7 @@ reg mem_rd;
                 read_addr <= pc_addr_i;
                 mem_wr <= 1'b1;
                 temp_inst <= 32'b0;
-                if(mem_rd == 1'b0 && mem_read_req == 1'b1)
+                if(mem_rd == 1'b0 && mem_read_req != 2'b00)
                 begin
                     mem_rd <= 1'b1;
                     mem_addr <= mem_read_addr;
@@ -82,7 +91,7 @@ reg mem_rd;
                 read_addr <= pc_addr_i + 1;
                 mem_wr <= 1'b1;
                 temp_inst[7:0] <= read_data;
-                if(mem_rd == 1'b0 && mem_read_req == 1'b1)
+                if(mem_rd == 1'b0 && mem_read_req != 2'b00)
                 begin
                     mem_rd <= 1'b1;
                     mem_addr <= mem_read_addr;
@@ -97,7 +106,7 @@ reg mem_rd;
                 read_addr <= pc_addr_i + 2;
                 mem_wr <= 1'b1;
                 temp_inst[15:8] <= read_data;
-                if(mem_rd == 1'b0 && mem_read_req == 1'b1)
+                if(mem_rd == 1'b0 && mem_read_req != 2'b00)
                 begin
                     mem_rd <= 1'b1;
                     mem_addr <= mem_read_addr;
@@ -112,7 +121,7 @@ reg mem_rd;
                 read_addr <= pc_addr_i + 3;
                 mem_wr <= 1'b1;
                 temp_inst[23:16] <= read_data;
-                if(mem_rd == 1'b0 && mem_read_req == 1'b1)
+                if(mem_rd == 1'b0 && mem_read_req != 2'b00)
                 begin
                     mem_rd <= 1'b1;
                     mem_addr <= mem_read_addr;
@@ -125,7 +134,7 @@ reg mem_rd;
                 inst_enable <= 1'b1;
                 mem_wr <= 1'b1;
                 inst_o <= {read_data,temp_inst[23:0]};
-                if(mem_rd == 1'b0 && mem_read_req == 1'b1)
+                if(mem_rd == 1'b0 && mem_read_req != 2'b00)
                 begin
                     mem_rd <= 1'b1;
                     mem_addr <= mem_read_addr;
@@ -146,18 +155,34 @@ reg mem_rd;
                 inst_enable <= 1'b0;
                 mem_wr <= 1'b1;
                 inst_o <= `ZeroWord;
-                mem_data_enable <= 1'b0;
-                read_addr <= mem_read_addr + 1;
-                temp_mem_data[7:0] <= read_data;
+                if(mem_read_req == 2'b01)
+                begin
+                    mem_data_enable <= 1'b1;
+                    mem_data_o <= {24'h000000,read_data};
+                    mem_rd <= 1'b0;
+                end
+                else begin
+                    mem_data_enable <= 1'b0;
+                    read_addr <= mem_read_addr + 1;
+                    temp_mem_data[7:0] <= read_data;
+                end
             end
             `Mem_3:
             begin
                 inst_enable <= 1'b0;
                 mem_wr <= 1'b1;
                 inst_o <= `ZeroWord;
-                mem_data_enable <= 1'b0;
-                read_addr <= mem_read_addr + 2;
-                temp_mem_data[15:8] <= read_data;
+                if(mem_read_req == 2'b10)
+                begin
+                    mem_data_enable <= 1'b1;
+                    mem_data_o <= {16'h000000,read_data,temp_mem_data[7:0]};
+                    mem_rd <= 1'b0;
+                end
+                else begin
+                    mem_data_enable <= 1'b0;
+                    read_addr <= mem_read_addr + 2;
+                    temp_mem_data[15:8] <= read_data;
+                end
             end
             `Mem_4:
             begin

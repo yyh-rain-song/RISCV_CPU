@@ -4,7 +4,7 @@ module RISCV(
     input wire rst,
     input wire[`ByteBus] rom_data_i,//从rom中取出的数据
     input wire[1:0] halt_req_i,
-    output wire[`RamAddrBus] rom_addr_o,//读rom的地�??????????
+    output wire[`RamAddrBus] rom_addr_o,//读rom的地�??????????
     output wire rom_ce_o,//cpu是否可用
     output wire mem_wr
 );
@@ -85,9 +85,9 @@ wire ram_data_enable;
 
 wire[`RamAddrBus] mem_ram_addr;
 //wire mem_halt_req; defined
-wire mem_read_req;
+wire[1:0] mem_read_req;
 
-//pc_reg实例�??????????
+//pc_reg实例�??????????
 pc_reg pc_reg0(
         .clk(clk),  .rst(rst),  
         .pc_branch_i(ex_pc_branch_o),

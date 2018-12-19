@@ -361,7 +361,7 @@ always @ (*) begin
             reg1_read_o <= 1'b0;
             reg2_read_o <= 1'b0;
             aluop_o <= `EXE_AUIPC_OP;
-            alusel_o <= `EXE_RES_JUMP;
+            alusel_o <= `EXE_RES_MATH;
             imm <= {inst_i[31:12], 3'h000};
             instvalid <= `InstValid;
             link_pc_o <= pc_i + 4;
@@ -372,7 +372,7 @@ always @ (*) begin
             case(op2)
             `EXE_BEQ_OP2:
             begin
-                wreg_o <= `WriteEnable;
+                wreg_o <= `WriteDisable;
                 alusel_o <= `EXE_RES_JUMP;
                 aluop_o <= `EXE_BEQ_OP;
                 reg1_read_o <= 1'b1;
@@ -385,7 +385,7 @@ always @ (*) begin
             end
             `EXE_BNE_OP2:
             begin
-                wreg_o <= `WriteEnable;
+                wreg_o <= `WriteDisable;
                 alusel_o <= `EXE_RES_JUMP;
                 aluop_o <= `EXE_BNE_OP;
                 reg1_read_o <= 1'b1;
@@ -398,7 +398,7 @@ always @ (*) begin
             end
             `EXE_BLT_OP2:
             begin
-                wreg_o <= `WriteEnable;
+                wreg_o <= `WriteDisable;
                 alusel_o <= `EXE_RES_JUMP;
                 aluop_o <= `EXE_BLT_OP;
                 reg1_read_o <= 1'b1;
@@ -411,7 +411,7 @@ always @ (*) begin
             end
             `EXE_BGE_OP2:
             begin
-                wreg_o <= `WriteEnable;
+                wreg_o <= `WriteDisable;
                 alusel_o <= `EXE_RES_JUMP;
                 aluop_o <= `EXE_BGE_OP;
                 reg1_read_o <= 1'b1;
@@ -424,7 +424,7 @@ always @ (*) begin
             end
             `EXE_BLTU_OP2:
             begin
-                wreg_o <= `WriteEnable;
+                wreg_o <= `WriteDisable;
                 alusel_o <= `EXE_RES_JUMP;
                 aluop_o <= `EXE_BLTU_OP;
                 reg1_read_o <= 1'b1;
@@ -437,7 +437,7 @@ always @ (*) begin
             end
             `EXE_BGEU_OP2:
             begin
-                wreg_o <= `WriteEnable;
+                wreg_o <= `WriteDisable;
                 alusel_o <= `EXE_RES_JUMP;
                 aluop_o <= `EXE_BGEU_OP;
                 reg1_read_o <= 1'b1;
@@ -464,13 +464,75 @@ always @ (*) begin
         end
         `EXE_LW_OP1:
         begin
-        wd_o        <= inst_i[11:7];
-        reg1_addr_o <= inst_i[19:15];
-        reg2_addr_o <= inst_i[24:20];
+            if(inst_i[1:0] == 2'b00)
+            begin
+                aluop_o     <= `EXE_NOP_OP;
+                alusel_o    <= `EXE_RES_NOP;
+                wreg_o      <= `WriteDisable;
+                reg1_read_o <= 1'b0;
+                reg2_read_o <= 1'b0;
+                imm         <= `ZeroWord;
+                instvalid   <= `InstInvalid;
+                link_pc_o <= `ZeroWord;
+                branch_offset_o <= `ZeroWord;
+            end
+            else
+            begin
+            wd_o        <= inst_i[11:7];
+            reg1_addr_o <= inst_i[19:15];
+            reg2_addr_o <= inst_i[24:20];
             case(op2)
             `EXE_LW_OP2:
             begin
                 aluop_o <= `EXE_LW_OP;
+                alusel_o <= `EXE_RES_LS;
+                wreg_o <= `WriteEnable;
+                reg1_read_o <= 1'b1;
+                reg2_read_o <= 1'b0;
+                imm <= {{20{inst_i[31]}},inst_i[31:20]};
+                instvalid <= `InstValid;
+                link_pc_o <= `ZeroWord;
+                branch_offset_o <= `ZeroWord;
+            end
+            `EXE_LH_OP2:
+            begin
+                aluop_o <= `EXE_LH_OP;
+                alusel_o <= `EXE_RES_LS;
+                wreg_o <= `WriteEnable;
+                reg1_read_o <= 1'b1;
+                reg2_read_o <= 1'b0;
+                imm <= {{20{inst_i[31]}},inst_i[31:20]};
+                instvalid <= `InstValid;
+                link_pc_o <= `ZeroWord;
+                branch_offset_o <= `ZeroWord;
+            end
+            `EXE_LB_OP2:
+            begin
+                aluop_o <= `EXE_LB_OP;
+                alusel_o <= `EXE_RES_LS;
+                wreg_o <= `WriteEnable;
+                reg1_read_o <= 1'b1;
+                reg2_read_o <= 1'b0;
+                imm <= {{20{inst_i[31]}},inst_i[31:20]};
+                instvalid <= `InstValid;
+                link_pc_o <= `ZeroWord;
+                branch_offset_o <= `ZeroWord;
+            end
+            `EXE_LBU_OP2:
+            begin
+                aluop_o <= `EXE_LBU_OP;
+                alusel_o <= `EXE_RES_LS;
+                wreg_o <= `WriteEnable;
+                reg1_read_o <= 1'b1;
+                reg2_read_o <= 1'b0;
+                imm <= {{20{inst_i[31]}},inst_i[31:20]};
+                instvalid <= `InstValid;
+                link_pc_o <= `ZeroWord;
+                branch_offset_o <= `ZeroWord;
+            end
+            `EXE_LHU_OP2:
+            begin
+                aluop_o <= `EXE_LHU_OP;
                 alusel_o <= `EXE_RES_LS;
                 wreg_o <= `WriteEnable;
                 reg1_read_o <= 1'b1;
@@ -493,6 +555,7 @@ always @ (*) begin
                 branch_offset_o <= `ZeroWord;
             end   
             endcase
+            end
         end
         default:
         begin

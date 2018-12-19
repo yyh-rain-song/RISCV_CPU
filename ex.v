@@ -133,6 +133,10 @@ begin
             begin
                 arithmatic <= reg1_les_reg2;
             end
+            `EXE_AUIPC_OP:
+            begin
+                arithmatic <= reg1_i + link_pc_i - 4;
+            end
         default
         begin
             arithmatic <= `ZeroWord;
@@ -161,14 +165,6 @@ begin
             IFID_discard_o <= 1'b1;
             IDEX_discard_o <= 1'b1;
             branch_addr_o <= (reg1_i + reg2_i)&(-2);
-        end
-        `EXE_AUIPC_OP:
-        begin
-            link_addr <= link_pc_i;
-            pc_branch_o <= 1'b1;
-            IFID_discard_o <= 1'b1;
-            IDEX_discard_o <= 1'b1;
-            branch_addr_o <= (link_pc_i - 4) + reg1_i;
         end
         `EXE_BEQ_OP:
         begin
@@ -261,6 +257,30 @@ begin
     begin
         case(aluop_i)
         `EXE_LW_OP:
+        begin
+            mem_addr <= reg1_i + reg2_i;
+            mem_write_data <= `ZeroWord;
+            mem_rw <= 1'b1;
+        end
+        `EXE_LH_OP:
+        begin
+            mem_addr <= reg1_i + reg2_i;
+            mem_write_data <= `ZeroWord;
+            mem_rw <= 1'b1;
+        end
+        `EXE_LB_OP:
+        begin
+            mem_addr <= reg1_i + reg2_i;
+            mem_write_data <= `ZeroWord;
+            mem_rw <= 1'b1;
+         end
+        `EXE_LHU_OP:
+        begin
+             mem_addr <= reg1_i + reg2_i;
+             mem_write_data <= `ZeroWord;
+             mem_rw <= 1'b1;
+         end
+        `EXE_LBU_OP:
         begin
             mem_addr <= reg1_i + reg2_i;
             mem_write_data <= `ZeroWord;

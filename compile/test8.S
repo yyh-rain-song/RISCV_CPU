@@ -1,1 +1,6 @@
 ori x1, x0, 0x000
+lw	x1, 0x004(x0)
+lh  x2, 0x004(x0)
+lb  x3, 0x004(x0)
+lhu x4, 0x004(x0)
+lbu x5, 0x004(x0)

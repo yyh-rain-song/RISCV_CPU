@@ -18,7 +18,7 @@ module mem(
 
     output reg[`RamAddrBus] ram_addr_o,
     output reg halt_req,
-    output reg mem_read_req
+    output reg[1:0] mem_read_req
 );
 reg[`RegBus] ram_data;
 always @ (*)
@@ -41,7 +41,47 @@ begin
             wdata_o <= ram_data;
             wd_o <= wd_i;
             wreg_o <= wreg_i;
-            mem_read_req <= 1'b1;
+            mem_read_req <= 2'b11;
+        end
+        `EXE_LH_OP:
+        begin
+            ram_addr_o <= ex_mem_addr_i;
+            halt_req <= ~ram_data_enable_i;
+            ram_data <= ram_data_i;
+            wdata_o <= {{16{ram_data[15]}},ram_data[15:0]};
+            wd_o <= wd_i;
+            wreg_o <= wreg_i;
+            mem_read_req <= 2'b10;
+        end
+        `EXE_LB_OP:
+        begin
+            ram_addr_o <= ex_mem_addr_i;
+            halt_req <= ~ram_data_enable_i;
+            ram_data <= ram_data_i;
+            wdata_o <= {{24{ram_data[7]}},ram_data[7:0]};
+            wd_o <= wd_i;
+            wreg_o <= wreg_i;
+            mem_read_req <= 2'b01;
+        end
+        `EXE_LBU_OP:
+        begin
+            ram_addr_o <= ex_mem_addr_i;
+            halt_req <= ~ram_data_enable_i;
+            ram_data <= ram_data_i;
+            wdata_o <= {24'h000000,ram_data[7:0]};           
+            wd_o <= wd_i;
+            wreg_o <= wreg_i;
+            mem_read_req <= 2'b01;
+        end
+        `EXE_LHU_OP:
+        begin
+            ram_addr_o <= ex_mem_addr_i;
+            halt_req <= ~ram_data_enable_i;
+            ram_data <= ram_data_i;
+            wdata_o <= {16'h0000,ram_data[15:0]};           
+            wd_o <= wd_i;
+            wreg_o <= wreg_i;
+            mem_read_req <= 2'b10;
         end
         default:
         begin
@@ -51,7 +91,7 @@ begin
             wdata_o <=`ZeroWord;
             wd_o <= `ZeroWord;
             wreg_o <= 1'b0;
-            mem_read_req <= 1'b0;
+            mem_read_req <= 2'b00;
         end
         endcase
     end
@@ -61,7 +101,7 @@ begin
         wreg_o <= wreg_i;
         wdata_o <= wdata_i;
         halt_req <= 1'b0;
-        mem_read_req <= 1'b0;
+        mem_read_req <= 2'b00;
     end
 end
 

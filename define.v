@@ -16,7 +16,7 @@
 `define     WriteDisable    1'b0
 `define     ReadEnable      1'b1
 `define     ReadDisable     1'b0
-`define     AluOpBus        7:0 //运算子类�??
+`define     AluOpBus        7:0 //运算子类�???
 `define     AluSelBus       2:0//运算类型
 `define     InstInvalid     1'b0
 `define     InstValid       1'b1
@@ -44,16 +44,12 @@
 `define     EXE_SRL_OP2         3'b101
 `define     EXE_OR_OP2          3'b110
 `define     EXE_AND_OP2         3'b111
-`define     EXE_LUI_OP2         3'b000
 `define     EXE_ADDI_OP2        3'b000
 `define     EXE_SLTI_OP2        3'b010
 `define     EXE_SLTIU_OP2       3'b011
 `define     EXE_ADD_OP2         3'b000//also EXE_SUB
 `define     EXE_SLT_OP2         3'b010
 `define     EXE_SLTU_OP2        3'b011
-`define     EXE_JAL_OP2         3'b000
-`define     EXE_JALR_OP2        3'b000
-`define     EXE_AUIPC_OP2       3'b000
 `define     EXE_BEQ_OP2         3'b000
 `define     EXE_BNE_OP2         3'b001
 `define     EXE_BLT_OP2         3'b100
@@ -62,12 +58,12 @@
 `define     EXE_BGEU_OP2        3'b111
 `define     EXE_LW_OP2          3'b010
 `define     EXE_LH_OP2          3'b001
-`define     EXE_LW_OP2          3'b010
+`define     EXE_LB_OP2          3'b000
 `define     EXE_LBU_OP2         3'b100
 `define     EXE_LHU_OP2         3'b101
 
 
-`define     EXE_OR_OP       8'b00000001//or operand运算子类�??
+`define     EXE_OR_OP       8'b00000001//or operand运算子类�???
 `define     EXE_AND_OP      8'b00000010
 `define     EXE_XOR_OP      8'b00000011
 `define     EXE_SFTR_OP     8'b00000100
@@ -87,6 +83,10 @@
 `define     EXE_JALR_OP     8'b00010010
 `define     EXE_LW_OP       8'b00010011
 `define     EXE_AUIPC_OP    8'b00010100
+`define     EXE_LH_OP       8'b00010101
+`define     EXE_LB_OP       8'b00010110
+`define     EXE_LBU_OP      8'b00010111
+`define     EXE_LHU_OP      8'b00011000
 `define     EXE_NOP_OP      8'b00000000
 
    
