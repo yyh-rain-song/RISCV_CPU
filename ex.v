@@ -21,7 +21,7 @@ module ex(
     output reg[`RamAddrBus] mem_addr,
     output reg[`RegBus] mem_write_data,
     output reg[`AluOpBus] aluop_o,
-    output reg mem_rw
+    output reg mem_rw//if need mem operation, mem_rw = 1, else = 0;
 );
 reg[`RegBus] logicout;
 reg[`RegBus] shiftres;
@@ -284,6 +284,24 @@ begin
         begin
             mem_addr <= reg1_i + reg2_i;
             mem_write_data <= `ZeroWord;
+            mem_rw <= 1'b1;
+        end
+        `EXE_SW_OP:
+        begin
+            mem_addr <= reg1_i + branch_offset_i;
+            mem_write_data <= reg2_i;
+            mem_rw <= 1'b1;
+        end
+        `EXE_SH_OP:
+        begin
+            mem_addr <= reg1_i + branch_offset_i;
+            mem_write_data <= reg2_i;
+            mem_rw <= 1'b1;
+        end
+        `EXE_SW_OP:
+        begin
+            mem_addr <= reg1_i + branch_offset_i;
+            mem_write_data <= reg2_i;
             mem_rw <= 1'b1;
         end
         default:

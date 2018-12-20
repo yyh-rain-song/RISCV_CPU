@@ -5,6 +5,7 @@ module RISCV(
     input wire[`ByteBus] rom_data_i,//从rom中取出的数据
     input wire[1:0] halt_req_i,
     output wire[`RamAddrBus] rom_addr_o,//读rom的地�??????????
+    output wire[`ByteBus] rom_data_o,
     output wire rom_ce_o,//cpu是否可用
     output wire mem_wr
 );
@@ -84,8 +85,10 @@ wire[`RegBus] ram_data;
 wire ram_data_enable;
 
 wire[`RamAddrBus] mem_ram_addr;
-//wire mem_halt_req; defined
 wire[1:0] mem_read_req;
+
+wire[`RegBus] ram_write_data;
+wire[1:0] mem_write_req;
 
 //pc_reg实例�??????????
 pc_reg pc_reg0(
@@ -101,13 +104,17 @@ mem_buffer mem_buffer0(
     .clk(clk),  .rst(rst),
     .pc_addr_i(pc), .read_data(rom_data_i),
     .mem_read_addr(mem_ram_addr),
+    .mem_write_data(ram_write_data),
     .mem_read_req(mem_read_req),
+    .mem_write_req(mem_write_req),
+
     .pc_changed(pc_changed),
 
     .inst_o(if_inst_i), .inst_enable(inst_enable),
     .mem_data_o(ram_data),
     .mem_data_enable(ram_data_enable),
-    .read_addr(rom_addr_o), .mem_wr(mem_wr)
+    .read_addr(rom_addr_o),  .write_data(rom_data_o),
+    .mem_wr(mem_wr)
 );
 
 ctrl ctrl0(
@@ -239,8 +246,9 @@ mem mem0(
     .wd_o(mem_wd_o),  .wreg_o(mem_wreg_o),
     .wdata_o(mem_wdata_o),
 
-    .ram_addr_o(mem_ram_addr),  .halt_req(mem_halt_req),
-    .mem_read_req(mem_read_req)
+    .ram_addr_o(mem_ram_addr),  .ram_data_o(ram_write_data),      
+    .halt_req(mem_halt_req),
+    .mem_read_req(mem_read_req), .mem_write_req(mem_write_req)
 );
 
 mem_wb mem_wb0(

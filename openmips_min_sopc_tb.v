@@ -13,7 +13,7 @@ end
 initial begin
     rst = `RstEnable;
     #195 rst= `RstDisable;
-    #10000 $stop;
+   #10000 $stop;
 end
 
 initial begin

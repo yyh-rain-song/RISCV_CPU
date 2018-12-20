@@ -369,6 +369,9 @@ always @ (*) begin
         end
         `EXE_BEQ_OP1:
         begin
+        wd_o        <= inst_i[11:7];
+        reg1_addr_o <= inst_i[19:15];
+        reg2_addr_o <= inst_i[24:20];        
             case(op2)
             `EXE_BEQ_OP2:
             begin
@@ -556,6 +559,62 @@ always @ (*) begin
             end   
             endcase
             end
+        end
+        `EXE_SW_OP1:
+        begin
+        wd_o        <= inst_i[11:7];
+        reg1_addr_o <= inst_i[19:15];
+        reg2_addr_o <= inst_i[24:20];
+            case(op2)
+            `EXE_SW_OP2:
+            begin
+                aluop_o <= `EXE_SW_OP;
+                alusel_o <= `EXE_RES_LS;
+                wreg_o <= `WriteDisable;
+                reg1_read_o <= 1'b1;
+                reg2_read_o <= 1'b1;
+                imm <= `ZeroWord;
+                instvalid <= `InstValid;
+                link_pc_o <= `ZeroWord;
+                branch_offset_o <= {{20{inst_i[31]}},inst_i[31:25],inst_i[11:7]};
+            end
+            `EXE_SH_OP2:
+            begin
+                aluop_o <= `EXE_SH_OP;
+                alusel_o <= `EXE_RES_LS;
+                wreg_o <= `WriteDisable;
+                reg1_read_o <= 1'b1;
+                reg2_read_o <= 1'b1;
+                imm <= `ZeroWord;
+                instvalid <= `InstValid;
+                link_pc_o <= `ZeroWord;
+                branch_offset_o <= {{20{inst_i[31]}},inst_i[31:25],inst_i[11:7]};
+            end
+            `EXE_SB_OP2:
+            begin
+                aluop_o <= `EXE_SB_OP;
+                alusel_o <= `EXE_RES_LS;
+                wreg_o <= `WriteDisable;
+                reg1_read_o <= 1'b1;
+                reg2_read_o <= 1'b1;
+                imm <= `ZeroWord;
+                instvalid <= `InstValid;
+                link_pc_o <= `ZeroWord;
+                branch_offset_o <= {{20{inst_i[31]}},inst_i[31:25],inst_i[11:7]};
+            end
+            default:
+            begin
+                aluop_o     <= `EXE_NOP_OP;
+                alusel_o    <= `EXE_RES_NOP;
+                wreg_o      <= `WriteDisable;
+                reg1_read_o <= 1'b0;
+                reg2_read_o <= 1'b0;
+                imm         <= `ZeroWord;
+                instvalid   <= `InstInvalid;
+                link_pc_o <= `ZeroWord;
+                branch_offset_o <= `ZeroWord;
+            end
+            endcase
         end
         default:
         begin

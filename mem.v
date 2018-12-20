@@ -17,8 +17,10 @@ module mem(
     output reg[`RegBus] wdata_o,
 
     output reg[`RamAddrBus] ram_addr_o,
+    output reg[`RegBus] ram_data_o,
     output reg halt_req,
-    output reg[1:0] mem_read_req
+    output reg[1:0] mem_read_req,
+    output reg[1:0] mem_write_req
 );
 reg[`RegBus] ram_data;
 always @ (*)
@@ -28,7 +30,11 @@ begin
         wd_o <= `NOPRegAddr;
         wreg_o <= `WriteDisable;
         wdata_o <= `ZeroWord;
-        mem_read_req <= 1'b0;
+        ram_addr_o <= `ZeroRamAddr;
+        ram_data_o <= `ZeroWord;
+        halt_req <= 1'b0;
+        mem_read_req <= 2'b00;
+        mem_write_req <= 2'b00;
     end
     else if(ex_mem_wr_i)
     begin
@@ -42,6 +48,7 @@ begin
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b11;
+            mem_write_req <= 2'b00;
         end
         `EXE_LH_OP:
         begin
@@ -52,6 +59,7 @@ begin
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b10;
+            mem_write_req <= 2'b00;
         end
         `EXE_LB_OP:
         begin
@@ -62,6 +70,7 @@ begin
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b01;
+            mem_write_req <= 2'b00;
         end
         `EXE_LBU_OP:
         begin
@@ -72,6 +81,7 @@ begin
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b01;
+            mem_write_req <= 2'b00;
         end
         `EXE_LHU_OP:
         begin
@@ -82,6 +92,49 @@ begin
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b10;
+            mem_write_req <= 2'b00;
+        end
+        `EXE_SW_OP:
+        begin
+            ram_addr_o <= ex_mem_addr_i;
+            halt_req <= ~ram_data_enable_i;
+            ram_data_o <= ex_mem_data_i;
+            wd_o <= wd_i;
+            wreg_o <= wreg_i;
+            if(ram_data_enable_i == 1'b0)
+            begin
+                mem_write_req <= 2'b11;
+            end
+            else begin
+                mem_write_req <= 2'b00;
+            end
+            mem_read_req <= 2'b00;
+        end
+        `EXE_SH_OP:
+        begin
+            ram_addr_o <= ex_mem_addr_i;
+            halt_req <= ~ram_data_enable_i;
+            ram_data_o <= ex_mem_data_i;
+            wd_o <= wd_i;
+            wreg_o <= wreg_i;
+            if(ram_data_enable_i == 1'b0)
+            begin
+                mem_write_req <= 2'b10;
+            end
+            else begin
+                mem_write_req <= 2'b00;
+            end
+            mem_read_req <= 2'b00;
+        end
+        `EXE_SB_OP:
+        begin
+            ram_addr_o <= ex_mem_addr_i;
+            halt_req <= ~ram_data_enable_i;
+            ram_data_o <= ex_mem_data_i;
+            wd_o <= wd_i;
+            wreg_o <= wreg_i;
+            mem_write_req <= 2'b01;
+            mem_read_req <= 2'b00;
         end
         default:
         begin
@@ -92,6 +145,7 @@ begin
             wd_o <= `ZeroWord;
             wreg_o <= 1'b0;
             mem_read_req <= 2'b00;
+            mem_write_req <= 2'b00;
         end
         endcase
     end
@@ -102,6 +156,7 @@ begin
         wdata_o <= wdata_i;
         halt_req <= 1'b0;
         mem_read_req <= 2'b00;
+        mem_write_req <= 2'b00;
     end
 end
 

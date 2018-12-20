@@ -16,7 +16,7 @@
 `define     WriteDisable    1'b0
 `define     ReadEnable      1'b1
 `define     ReadDisable     1'b0
-`define     AluOpBus        7:0 //运算子类�???
+`define     AluOpBus        7:0 //运算子类�????
 `define     AluSelBus       2:0//运算类型
 `define     InstInvalid     1'b0
 `define     InstValid       1'b1
@@ -34,6 +34,7 @@
 `define     EXE_AUIPC_OP1       5'b00101
 `define     EXE_BEQ_OP1         5'b11000
 `define     EXE_LW_OP1          5'b00000
+`define     EXE_SW_OP1          5'b01000
 `define     EXE_ORI_OP2         3'b110
 `define     EXE_XORI_OP2        3'b100
 `define     EXE_ANDI_OP2        3'b111
@@ -61,9 +62,12 @@
 `define     EXE_LB_OP2          3'b000
 `define     EXE_LBU_OP2         3'b100
 `define     EXE_LHU_OP2         3'b101
+`define     EXE_SW_OP2          3'b010
+`define     EXE_SH_OP2          3'b001
+`define     EXE_SB_OP2          3'b000
 
 
-`define     EXE_OR_OP       8'b00000001//or operand运算子类�???
+`define     EXE_OR_OP       8'b00000001//or operand运算子类�????
 `define     EXE_AND_OP      8'b00000010
 `define     EXE_XOR_OP      8'b00000011
 `define     EXE_SFTR_OP     8'b00000100
@@ -87,10 +91,11 @@
 `define     EXE_LB_OP       8'b00010110
 `define     EXE_LBU_OP      8'b00010111
 `define     EXE_LHU_OP      8'b00011000
+`define     EXE_SW_OP       8'b00011001
+`define     EXE_SH_OP       8'b00011010
+`define     EXE_SB_OP       8'b00011011
 `define     EXE_NOP_OP      8'b00000000
-
    
-
 `define     EXE_RES_LOGIC   3'b001//logic 运算类型(and andi or ori xor xori) lui解码为ori imm x0
 `define     EXE_RES_SHIFT   3'b010//shift 运算类型(sll slli srl srli sra srai)
 `define     EXE_RES_MATH    3'b011//数学 运算类型(add addi stl stli sltu sltiu)
@@ -110,6 +115,10 @@
 `define     Mem_3           4'b0111
 `define     Mem_4           4'b1000
 `define     Mem_5           4'b1001
+`define     Write_1         4'b1010
+`define     Write_2         4'b1011
+`define     Write_3         4'b1100
+`define     Write_4         4'b1101
 
 /*与指令存储器ROM有关的宏定义*/
 `define     RamAddrBus      16:0

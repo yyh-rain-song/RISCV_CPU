@@ -90,7 +90,7 @@ initial begin
   for (i=0;i<2**ADDR_WIDTH;i=i+1) begin
     ram[i] = 0;
   end
-  $readmemh("D:/RISCV/RISCV_CPU/compile/test8.data", ram); // add test.data to vivado project or specify a valid file path
+  $readmemh("D:/RISCV/RISCV_CPU/compile/test9.data", ram); // add test.data to vivado project or specify a valid file path
 end
 
 endmodule
