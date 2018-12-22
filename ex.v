@@ -298,7 +298,7 @@ begin
             mem_write_data <= reg2_i;
             mem_rw <= 1'b1;
         end
-        `EXE_SW_OP:
+        `EXE_SB_OP:
         begin
             mem_addr <= reg1_i + branch_offset_i;
             mem_write_data <= reg2_i;
@@ -325,31 +325,19 @@ always @ (*)
 begin
     wd_o <= wd_i;
     wreg_o <= wreg_i;
-    aluop_o = aluop_i;
+    aluop_o <= aluop_i;
     case (alusel_i)
         `EXE_RES_LOGIC:
         begin
             wdata_o <= logicout;
-            pc_branch_o <= 1'b0;
-            branch_addr_o <= `ZeroWord;
-            IFID_discard_o <= 1'b0;
-            IDEX_discard_o <= 1'b0;
         end
         `EXE_RES_SHIFT:
         begin
             wdata_o <= shiftres;
-            pc_branch_o <= 1'b0;
-            branch_addr_o <= `ZeroWord;
-            IFID_discard_o <= 1'b0;
-            IDEX_discard_o <= 1'b0;
         end
         `EXE_RES_MATH:
         begin
             wdata_o <= arithmatic;
-            pc_branch_o <= 1'b0;
-            branch_addr_o <= `ZeroWord;
-            IFID_discard_o <= 1'b0;
-            IDEX_discard_o <= 1'b0;
         end
         `EXE_RES_JUMP:
         begin

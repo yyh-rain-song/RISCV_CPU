@@ -7,7 +7,7 @@ reg[1:0] halt;
 
 initial begin
   CLOCK_50 = 1'b0;
-  forever #10 CLOCK_50 = ~CLOCK_50;
+  forever #1 CLOCK_50 = ~CLOCK_50;
 end
 
 initial begin

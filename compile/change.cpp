@@ -2,10 +2,10 @@
 #include <iostream>
 using namespace std;
 long long cnt = 0;
-int main()
+int main(int argc, char* argv[])
 {
-	freopen("test7.data", "r", stdin);
-	freopen("ttest.data", "w", stdout);
+	freopen("test10.data", "r", stdin);
+	freopen("test_10.data", "w", stdout);
 	char inst[8];
 	char c;
 	while(c = getchar())

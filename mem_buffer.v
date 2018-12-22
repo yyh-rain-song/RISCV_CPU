@@ -34,7 +34,11 @@ reg mem_write;
         end
         else 
         begin
-            if(cnt == `Inst_5)
+            if(pc_changed == 1'b1 && (cnt == `Inst_2 || cnt == `Inst_3 || cnt == `Inst_4))
+            begin
+                cnt <= `Inst_1;
+            end
+            else if(cnt == `Inst_5)
             begin
                 if(mem_rd == 1'b1)
                 begin

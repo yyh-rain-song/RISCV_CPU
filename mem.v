@@ -44,7 +44,7 @@ begin
             ram_addr_o <= ex_mem_addr_i;
             halt_req <= ~ram_data_enable_i;
             ram_data <= ram_data_i;
-            wdata_o <= ram_data;
+            wdata_o <= ram_data_i;
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b11;
@@ -55,7 +55,7 @@ begin
             ram_addr_o <= ex_mem_addr_i;
             halt_req <= ~ram_data_enable_i;
             ram_data <= ram_data_i;
-            wdata_o <= {{16{ram_data[15]}},ram_data[15:0]};
+            wdata_o <= {{16{ram_data_i[15]}},ram_data_i[15:0]};
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b10;
@@ -66,7 +66,7 @@ begin
             ram_addr_o <= ex_mem_addr_i;
             halt_req <= ~ram_data_enable_i;
             ram_data <= ram_data_i;
-            wdata_o <= {{24{ram_data[7]}},ram_data[7:0]};
+            wdata_o <= {{24{ram_data_i[7]}},ram_data_i[7:0]};
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b01;
@@ -77,7 +77,7 @@ begin
             ram_addr_o <= ex_mem_addr_i;
             halt_req <= ~ram_data_enable_i;
             ram_data <= ram_data_i;
-            wdata_o <= {24'h000000,ram_data[7:0]};           
+            wdata_o <= {24'h000000,ram_data_i[7:0]};           
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b01;
@@ -88,7 +88,7 @@ begin
             ram_addr_o <= ex_mem_addr_i;
             halt_req <= ~ram_data_enable_i;
             ram_data <= ram_data_i;
-            wdata_o <= {16'h0000,ram_data[15:0]};           
+            wdata_o <= {16'h0000,ram_data_i[15:0]};           
             wd_o <= wd_i;
             wreg_o <= wreg_i;
             mem_read_req <= 2'b10;

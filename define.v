@@ -16,7 +16,7 @@
 `define     WriteDisable    1'b0
 `define     ReadEnable      1'b1
 `define     ReadDisable     1'b0
-`define     AluOpBus        7:0 //运算子类�????
+`define     AluOpBus        4:0 //运算子类�????
 `define     AluSelBus       2:0//运算类型
 `define     InstInvalid     1'b0
 `define     InstValid       1'b1
@@ -67,34 +67,34 @@
 `define     EXE_SB_OP2          3'b000
 
 
-`define     EXE_OR_OP       8'b00000001//or operand运算子类�????
-`define     EXE_AND_OP      8'b00000010
-`define     EXE_XOR_OP      8'b00000011
-`define     EXE_SFTR_OP     8'b00000100
-`define     EXE_SFTL_OP     8'b00000101
-`define     EXE_SFTSY_OP    8'b00000110
-`define     EXE_ADD_OP      8'b00000111
-`define     EXE_LES_OP      8'b00001000
-`define     EXE_SUB_OP      8'b00001001
-`define     EXE_LESU_OP     8'b00001010
-`define     EXE_JAL_OP      8'b00001011
-`define     EXE_BEQ_OP      8'b00001100
-`define     EXE_BNE_OP      8'b00001101
-`define     EXE_BLT_OP      8'b00001110
-`define     EXE_BGE_OP      8'b00001111
-`define     EXE_BLTU_OP     8'b00010000
-`define     EXE_BGEU_OP     8'b00010001
-`define     EXE_JALR_OP     8'b00010010
-`define     EXE_LW_OP       8'b00010011
-`define     EXE_AUIPC_OP    8'b00010100
-`define     EXE_LH_OP       8'b00010101
-`define     EXE_LB_OP       8'b00010110
-`define     EXE_LBU_OP      8'b00010111
-`define     EXE_LHU_OP      8'b00011000
-`define     EXE_SW_OP       8'b00011001
-`define     EXE_SH_OP       8'b00011010
-`define     EXE_SB_OP       8'b00011011
-`define     EXE_NOP_OP      8'b00000000
+`define     EXE_OR_OP       5'b00001//or operand运算子类�????
+`define     EXE_AND_OP      5'b00010
+`define     EXE_XOR_OP      5'b00011
+`define     EXE_SFTR_OP     5'b00100
+`define     EXE_SFTL_OP     5'b00101
+`define     EXE_SFTSY_OP    5'b00110
+`define     EXE_ADD_OP      5'b00111
+`define     EXE_LES_OP      5'b01000
+`define     EXE_SUB_OP      5'b01001
+`define     EXE_LESU_OP     5'b01010
+`define     EXE_JAL_OP      5'b01011
+`define     EXE_BEQ_OP      5'b01100
+`define     EXE_BNE_OP      5'b01101
+`define     EXE_BLT_OP      5'b01110
+`define     EXE_BGE_OP      5'b01111
+`define     EXE_BLTU_OP     5'b10000
+`define     EXE_BGEU_OP     5'b10001
+`define     EXE_JALR_OP     5'b10010
+`define     EXE_LW_OP       5'b10011
+`define     EXE_AUIPC_OP    5'b10100
+`define     EXE_LH_OP       5'b10101
+`define     EXE_LB_OP       5'b10110
+`define     EXE_LBU_OP      5'b10111
+`define     EXE_LHU_OP      5'b11000
+`define     EXE_SW_OP       5'b11001
+`define     EXE_SH_OP       5'b11010
+`define     EXE_SB_OP       5'b11011
+`define     EXE_NOP_OP      5'b00000
    
 `define     EXE_RES_LOGIC   3'b001//logic 运算类型(and andi or ori xor xori) lui解码为ori imm x0
 `define     EXE_RES_SHIFT   3'b010//shift 运算类型(sll slli srl srli sra srai)
