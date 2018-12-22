@@ -70,7 +70,7 @@ always @ (*) begin
                 aluop_o <= `EXE_ADD_OP;
                 reg1_read_o <= 1'b1;
                 reg2_read_o <= 1'b0;
-                imm <= {{12{inst_i[31]}},inst_i[31:20]};
+                imm <= {{20{inst_i[31]}},inst_i[31:20]};
                 instvalid <= `InstValid;
                 link_pc_o <= `ZeroWord;
                 branch_offset_o <= `ZeroWord;
@@ -82,7 +82,7 @@ always @ (*) begin
                 aluop_o <= `EXE_LES_OP;
                 reg1_read_o <= 1'b1;
                 reg2_read_o <= 1'b0;
-                imm <= {{12{inst_i[31]}},inst_i[31:20]};
+                imm <= {{20{inst_i[31]}},inst_i[31:20]};
                 instvalid <= `InstValid;
                 link_pc_o <= `ZeroWord;
                 branch_offset_o <= `ZeroWord;
@@ -94,7 +94,7 @@ always @ (*) begin
                 aluop_o <= `EXE_LESU_OP;
                 reg1_read_o <= 1'b1;
                 reg2_read_o <= 1'b0;
-                imm <= {{12{inst_i[31]}},inst_i[31:20]};
+                imm <= {{20{inst_i[31]}},inst_i[31:20]};
                 instvalid <= `InstValid;
                 link_pc_o <= `ZeroWord;
                 branch_offset_o <= `ZeroWord;
@@ -192,7 +192,7 @@ always @ (*) begin
                 alusel_o <= `EXE_RES_MATH;
                 reg1_read_o <= 1'b1;
                 reg2_read_o <= 1'b1;
-                imm <= {{12{inst_i[31]}},inst_i[31:20]};
+                imm <= {{20{inst_i[31]}},inst_i[31:20]};
                 instvalid <= `InstValid;
                 link_pc_o <= `ZeroWord;
                 branch_offset_o <= `ZeroWord;
@@ -224,7 +224,7 @@ always @ (*) begin
                 aluop_o <= `EXE_LES_OP;
                 reg1_read_o <= 1'b1;
                 reg2_read_o <= 1'b0;
-                imm <= {{12{inst_i[31]}},inst_i[31:20]};
+                imm <= {{20{inst_i[31]}},inst_i[31:20]};
                 instvalid <= `InstValid;
                 link_pc_o <= `ZeroWord;
                 branch_offset_o <= `ZeroWord;
@@ -236,7 +236,7 @@ always @ (*) begin
                 aluop_o <= `EXE_LESU_OP;
                 reg1_read_o <= 1'b1;
                 reg2_read_o <= 1'b0;
-                imm <= {12'b0,inst_i[31:20]};
+                imm <= {20'h00000,inst_i[31:20]};
                 instvalid <= `InstValid;
                 link_pc_o <= `ZeroWord;
                 branch_offset_o <= `ZeroWord;
@@ -321,7 +321,7 @@ always @ (*) begin
             alusel_o <= `EXE_RES_LOGIC;
             reg1_read_o <= 1'b1;
             reg2_read_o <= 1'b0;
-            imm <= {inst_i[31:12],12'h0};
+            imm <= {inst_i[31:12],12'h000};
             instvalid <= `InstValid;
             reg1_addr_o <= `NOPRegAddr;
             branch_offset_o <= `ZeroWord;
@@ -334,7 +334,7 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             aluop_o <= `EXE_JAL_OP;
             alusel_o <= `EXE_RES_JUMP;
-            imm <= {{10{inst_i[31]}},inst_i[31],inst_i[19:12],inst_i[20],inst_i[30:21]};
+            imm <= {{12{inst_i[31]}},inst_i[31],inst_i[19:12],inst_i[20],inst_i[30:21]};
             instvalid <= `InstValid;
             link_pc_o <= pc_i + 4;
             branch_offset_o <= `ZeroWord;
@@ -362,7 +362,7 @@ always @ (*) begin
             reg2_read_o <= 1'b0;
             aluop_o <= `EXE_AUIPC_OP;
             alusel_o <= `EXE_RES_MATH;
-            imm <= {inst_i[31:12], 3'h000};
+            imm <= {inst_i[31:12], 12'h000};
             instvalid <= `InstValid;
             link_pc_o <= pc_i + 4;
             branch_offset_o <= `ZeroWord;

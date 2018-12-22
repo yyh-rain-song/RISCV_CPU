@@ -28,11 +28,6 @@ reg[`RegBus] shiftres;
 reg[`RegBus] arithmatic;
 reg[`RegBus] link_addr;
 
-
-wire[`RegBus] reg2_i_mux;
-wire reg1_les_reg2;
-wire[`RegBus] result_sum;
-
 always @ (*)
 begin
     if(rst == `RstEnable)
@@ -87,8 +82,7 @@ begin
             end
             `EXE_SFTSY_OP:
             begin
-                shiftres <= ({32{reg1_i[31]}}<<(6'd32-{1'b0,reg2_i[4:0]}))
-                            | reg1_i >> reg2_i[4:0];
+                shiftres <= ($signed(reg1_i)) >>> reg2_i[4:0];
             end
             default:
             begin
@@ -102,20 +96,6 @@ begin
     end//end else
 end//end always
 
-assign reg2_i_mux = ((aluop_i == `EXE_SUB_OP) || 
-                     (aluop_i == `EXE_LES_OP))?
-                    (~reg2_i)+1 : reg2_i;
-
-assign result_sum = reg1_i + reg2_i_mux;
-
-assign reg1_les_reg2 = ((aluop_i == `EXE_LES_OP) || 
-                        (aluop_i == `EXE_BLT_OP) ||
-                        (aluop_i == `EXE_BGE_OP))?
-                       ((reg1_i[31] && !reg2_i[31]) ||
-                        (!reg1_i[31] && !reg2_i[31] && result_sum[31]) ||
-                        (reg1_i[31] && reg2_i[31] && result_sum[31]))
-                      :(reg1_i < reg2_i);
-
 always @ (*)
 begin
     if(rst == `RstEnable)
@@ -125,13 +105,21 @@ begin
     else
     begin
         case (aluop_i)
-            `EXE_ADD_OP, `EXE_SUB_OP:
+            `EXE_ADD_OP:
             begin
-                arithmatic <= result_sum;
+                arithmatic <= reg1_i + reg2_i;
             end
-            `EXE_LES_OP, `EXE_LESU_OP:
+            `EXE_SUB_OP:
             begin
-                arithmatic <= reg1_les_reg2;
+                arithmatic <= reg1_i - reg2_i;
+            end
+            `EXE_LES_OP:
+            begin
+                arithmatic <= ($signed(reg1_i)) < ($signed(reg2_i));
+            end
+            `EXE_LESU_OP:
+            begin
+                arithmatic <= reg1_i < reg2_i;
             end
             `EXE_AUIPC_OP:
             begin
@@ -191,7 +179,7 @@ begin
         `EXE_BLT_OP:
         begin
             link_addr <= `ZeroWord;
-            if(reg1_les_reg2)
+            if($signed(reg1_i) < $signed(reg2_i))
             begin
                 pc_branch_o <= 1'b1;
                 IFID_discard_o <= 1'b1;
@@ -202,7 +190,7 @@ begin
         `EXE_BGE_OP:
         begin
             link_addr <= `ZeroWord;
-            if(!reg1_les_reg2)
+            if($signed(reg1_i) >= $signed(reg2_i))
             begin
                 pc_branch_o <= 1'b1;
                 IFID_discard_o <= 1'b1;
@@ -213,7 +201,7 @@ begin
         `EXE_BLTU_OP:
         begin
             link_addr <= `ZeroWord;
-            if(reg1_les_reg2)
+            if(reg1_i < reg2_i)
             begin
                 pc_branch_o <= 1'b1;
                 IFID_discard_o <= 1'b1;
@@ -224,7 +212,7 @@ begin
         `EXE_BGEU_OP:
         begin
             link_addr <= `ZeroWord;
-            if(!reg1_les_reg2)
+            if(reg1_i >= reg2_i)
             begin
                 pc_branch_o <= 1'b1;
                 IFID_discard_o <= 1'b1;

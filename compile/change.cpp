@@ -4,8 +4,8 @@ using namespace std;
 long long cnt = 0;
 int main(int argc, char* argv[])
 {
-	freopen("test10.data", "r", stdin);
-	freopen("test_10.data", "w", stdout);
+	freopen("testl.data", "r", stdin);
+	freopen("test_l.data", "w", stdout);
 	char inst[8];
 	char c;
 	while(c = getchar())
@@ -14,7 +14,9 @@ int main(int argc, char* argv[])
 		{
 			cnt++;
 			putchar(c);
-			if(cnt%2 == 0) 
+			if(cnt%2 == 0)
+				putchar(' ');
+			if(cnt%8 == 0) 
 				putchar('\n');
 		}
 		else if(c != ' ' && c != '\n')

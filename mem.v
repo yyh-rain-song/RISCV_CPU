@@ -47,7 +47,14 @@ begin
             wdata_o <= ram_data_i;
             wd_o <= wd_i;
             wreg_o <= wreg_i;
-            mem_read_req <= 2'b11;
+            if(ram_data_enable_i == 1'b0)
+            begin
+                mem_read_req <= 2'b11;
+            end
+            else
+            begin
+                mem_read_req <= 2'b00;
+            end
             mem_write_req <= 2'b00;
         end
         `EXE_LH_OP:
@@ -58,7 +65,14 @@ begin
             wdata_o <= {{16{ram_data_i[15]}},ram_data_i[15:0]};
             wd_o <= wd_i;
             wreg_o <= wreg_i;
-            mem_read_req <= 2'b10;
+            if(ram_data_enable_i == 1'b0)
+            begin
+                mem_read_req <= 2'b10;
+            end
+            else
+            begin
+                mem_read_req <= 2'b00;
+            end
             mem_write_req <= 2'b00;
         end
         `EXE_LB_OP:
@@ -69,7 +83,14 @@ begin
             wdata_o <= {{24{ram_data_i[7]}},ram_data_i[7:0]};
             wd_o <= wd_i;
             wreg_o <= wreg_i;
-            mem_read_req <= 2'b01;
+            if(ram_data_enable_i == 1'b0)
+            begin
+                mem_read_req <= 2'b01;
+            end
+            else
+            begin
+                mem_read_req <= 2'b00;
+            end
             mem_write_req <= 2'b00;
         end
         `EXE_LBU_OP:
@@ -80,7 +101,14 @@ begin
             wdata_o <= {24'h000000,ram_data_i[7:0]};           
             wd_o <= wd_i;
             wreg_o <= wreg_i;
-            mem_read_req <= 2'b01;
+            if(ram_data_enable_i == 1'b0)
+            begin
+                mem_read_req <= 2'b01;
+            end
+            else
+            begin
+                mem_read_req <= 2'b00;
+            end
             mem_write_req <= 2'b00;
         end
         `EXE_LHU_OP:
@@ -91,7 +119,14 @@ begin
             wdata_o <= {16'h0000,ram_data_i[15:0]};           
             wd_o <= wd_i;
             wreg_o <= wreg_i;
-            mem_read_req <= 2'b10;
+            if(ram_data_enable_i == 1'b0)
+            begin
+                mem_read_req <= 2'b10;
+            end
+            else
+            begin
+                mem_read_req <= 2'b00;
+            end
             mem_write_req <= 2'b00;
         end
         `EXE_SW_OP:
@@ -133,7 +168,13 @@ begin
             ram_data_o <= ex_mem_data_i;
             wd_o <= wd_i;
             wreg_o <= wreg_i;
-            mem_write_req <= 2'b01;
+            if(ram_data_enable_i == 1'b0)
+            begin
+                mem_write_req <= 2'b01;
+            end
+            else begin
+                mem_write_req <= 2'b00;
+            end
             mem_read_req <= 2'b00;
         end
         default:

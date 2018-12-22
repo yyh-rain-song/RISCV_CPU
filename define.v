@@ -121,8 +121,8 @@
 `define     Write_4         4'b1101
 
 /*与指令存储器ROM有关的宏定义*/
-`define     RamAddrBus      16:0
-`define     ZeroRamAddr     17'b00000000000000000
+`define     RamAddrBus      31:0
+`define     ZeroRamAddr     32'h00000000
 `define     InstBus         31:0
 `define     InstAddrBus     31:0
 `define     InstMemNum      131071

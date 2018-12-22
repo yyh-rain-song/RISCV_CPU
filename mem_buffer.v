@@ -38,19 +38,17 @@ reg mem_write;
             begin
                 cnt <= `Inst_1;
             end
-            else if(cnt == `Inst_5)
+            else if(mem_rd == 1'b1 && (cnt >= `Inst_1 && cnt <= `Inst_5))
             begin
-                if(mem_rd == 1'b1)
-                begin
-                    cnt <= `Mem_1;
-                end
-                else if(mem_write == 1'b1)
-                begin
-                    cnt <= `Write_1;
-                end
-                else begin
-                    cnt <= `Inst_1;
-                end
+                cnt <= `Mem_1;
+            end
+            else if(mem_write == 1'b1 && (cnt >= `Inst_1 && cnt <= `Inst_5))
+            begin
+                cnt <= `Write_1;
+            end
+            else if(cnt == `Inst_5 && mem_rd == 1'b0 && mem_write == 1'b0)
+            begin
+                cnt <= `Inst_1;
             end
             else if((cnt == `Mem_2 || cnt == `Mem_3 || cnt == `Mem_5) && mem_rd == 1'b0)
             begin
@@ -66,8 +64,8 @@ reg mem_write;
         end
     end
     
-    always @ (*)
-    begin
+    always @ (rst or cnt or read_data or pc_addr_i)
+    begin        
         if(rst == `RstEnable)
         begin
             inst_o <= `ZeroWord;
@@ -80,7 +78,8 @@ reg mem_write;
             mem_rd <= 1'b0;
             mem_write <= 1'b0;
             temp_mem_data <= `ZeroWord;
-        end else
+        end
+        else
         begin
             case (cnt)
             `Inst_1:
@@ -89,7 +88,7 @@ reg mem_write;
                 inst_o <= `ZeroWord;
                 read_addr <= pc_addr_i;
                 mem_wr <= 1'b1;
-                temp_inst <= 32'b0;
+                temp_inst <= `ZeroWord;
                 if(mem_rd == 1'b0 && mem_read_req != 2'b00)
                 begin
                     mem_rd <= 1'b1;
@@ -198,6 +197,7 @@ reg mem_write;
                 inst_o <= `ZeroWord;
                 mem_data_enable <= 1'b0;
                 read_addr <= mem_read_addr;
+                temp_mem_data <= `ZeroWord;
             end
             `Mem_2:
             begin
