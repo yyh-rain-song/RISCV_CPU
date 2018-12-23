@@ -16,7 +16,7 @@
 `define     WriteDisable    1'b0
 `define     ReadEnable      1'b1
 `define     ReadDisable     1'b0
-`define     AluOpBus        4:0 //运算子类�????
+`define     AluOpBus        4:0 //运算子类�????
 `define     AluSelBus       2:0//运算类型
 `define     InstInvalid     1'b0
 `define     InstValid       1'b1
@@ -67,7 +67,7 @@
 `define     EXE_SB_OP2          3'b000
 
 
-`define     EXE_OR_OP       5'b00001//or operand运算子类�????
+`define     EXE_OR_OP       5'b00001//or operand运算子类�????
 `define     EXE_AND_OP      5'b00010
 `define     EXE_XOR_OP      5'b00011
 `define     EXE_SFTR_OP     5'b00100
