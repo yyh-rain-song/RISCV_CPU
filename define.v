@@ -119,6 +119,8 @@
 `define     Write_2         4'b1011
 `define     Write_3         4'b1100
 `define     Write_4         4'b1101
+`define     Empty           4'b1110
+`define     ELSE            4'b1111
 
 /*与指令存储器ROM有关的宏定义*/
 `define     RamAddrBus      31:0
