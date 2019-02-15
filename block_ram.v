@@ -66,7 +66,7 @@ module single_port_ram_sync
 )
 (
   input  wire                  clk,
-  input  wire                  we,
+  input  wire                  we,//1 for write
   input  wire [ADDR_WIDTH-1:0] addr_a,
   input  wire [DATA_WIDTH-1:0] din_a,
   output wire [DATA_WIDTH-1:0] dout_a
@@ -90,7 +90,7 @@ initial begin
   for (i=0;i<2**ADDR_WIDTH;i=i+1) begin
     ram[i] = 0;
   end
-  $readmemh("D:/RISCV/RISCV_CPU/test/test.data", ram); // add test.data to vivado project or specify a valid file path
+  $readmemh("D:\\RISCV_CPU\\RISCV_CPU\\test\\test.data", ram); // add test.data to vivado project or specify a valid file path
 end
 
 endmodule

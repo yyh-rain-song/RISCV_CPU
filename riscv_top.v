@@ -6,7 +6,8 @@ module riscv_top
 	parameter SIM = 0						// whether in simulation
 )
 (
-	input wire 			EXCLK,
+	input wire 			CLOCK_P,
+	input wire         CLOCK_N,
 	input wire			btnC,
 	output wire 		Tx,
 	input wire 			Rx,
@@ -20,11 +21,24 @@ localparam RAM_ADDR_WIDTH = 17; 			// 128KiB ram, should not be modified
 reg rst;
 reg rst_delay;
 
+//reg EXCLK;
 wire clk;
 
 // assign EXCLK (or your own clock module) to clk
-assign clk = EXCLK;
+//assign clk = EXCLK;
 
+
+
+ half_clk_0 u1
+  (
+   // Clock out ports
+   .clk_out1(clk),     // output clk_out1
+  // Clock in ports
+   .clk_in1_p(CLOCK_P),    // input clk_in1_p
+   .clk_in1_n(CLOCK_N));    // input clk_in1_n
+   
+   
+   
 always @(posedge clk or posedge btnC)
 begin
 	if (btnC)
